@@ -1,0 +1,11 @@
+{
+  "app": { "name": "ProveCheck" },
+  "common": { "loading": "Loading…", "retry": "Retry" },
+  "errors": {
+    "validation_failed": "The data you entered is not valid.",
+    "unauthorized": "You need to sign in.",
+    "forbidden": "You are not allowed to do this.",
+    "not_found": "We could not find what you are looking for.",
+    "internal": "Something went wrong. Please try again."
+  }
+}

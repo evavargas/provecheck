@@ -1,0 +1,14 @@
+{
+  "expo": {
+    "name": "ProveCheck",
+    "slug": "provecheck",
+    "scheme": "provecheck",
+    "version": "0.0.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "automatic",
+    "plugins": ["expo-router"],
+    "web": { "bundler": "metro", "output": "single" },
+    "ios": { "bundleIdentifier": "uy.provecheck.app" },
+    "android": { "package": "uy.provecheck.app" }
+  }
+}
