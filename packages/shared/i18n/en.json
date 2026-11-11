@@ -1,6 +1,8 @@
 {
   "app": {
-    "name": "ProveCheck"
+    "name": "ProveCheck",
+    "collaboratorHome": "My tasks",
+    "clientHome": "My services"
   },
   "common": {
     "loading": "Loading…",
@@ -52,7 +54,12 @@
     "appTagline": "Field service management",
     "subtitle": "Enter your credentials to continue.",
     "identifierPlaceholder": "e.g. user@company.com",
-    "passwordPlaceholder": "Enter your password"
+    "passwordPlaceholder": "Enter your password",
+    "inactive": {
+      "title": "Your account was deactivated",
+      "body": "Contact your administrator."
+    },
+    "notForApp": "This account uses the management panel, not the app."
   },
   "prefs": {
     "theme": "Theme",

@@ -6,9 +6,16 @@
     "version": "0.0.0",
     "orientation": "portrait",
     "userInterfaceStyle": "automatic",
-    "plugins": ["expo-router"],
-    "web": { "bundler": "metro", "output": "single" },
-    "ios": { "bundleIdentifier": "uy.provecheck.app" },
-    "android": { "package": "uy.provecheck.app" }
+    "plugins": ["expo-router", "expo-secure-store", "expo-localization"],
+    "web": {
+      "bundler": "metro",
+      "output": "single"
+    },
+    "ios": {
+      "bundleIdentifier": "uy.provecheck.app"
+    },
+    "android": {
+      "package": "uy.provecheck.app"
+    }
   }
 }

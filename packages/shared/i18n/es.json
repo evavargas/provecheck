@@ -1,6 +1,8 @@
 {
   "app": {
-    "name": "ProveCheck"
+    "name": "ProveCheck",
+    "collaboratorHome": "Mis tareas",
+    "clientHome": "Mis servicios"
   },
   "common": {
     "loading": "Cargando…",
@@ -52,7 +54,12 @@
     "appTagline": "Gestión de servicios de campo",
     "subtitle": "Ingresá tus credenciales para continuar.",
     "identifierPlaceholder": "ej. usuario@empresa.com",
-    "passwordPlaceholder": "Ingresá tu contraseña"
+    "passwordPlaceholder": "Ingresá tu contraseña",
+    "inactive": {
+      "title": "Tu cuenta fue dada de baja",
+      "body": "Contactá a tu administrador."
+    },
+    "notForApp": "Esta cuenta usa el panel de gestión, no la app."
   },
   "prefs": {
     "theme": "Tema",
