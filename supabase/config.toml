@@ -120,7 +120,7 @@ file_size_limit = "50MiB"
 [storage.buckets.provecheck]
 public = false
 file_size_limit = "5MiB"
-allowed_mime_types = ["image/jpeg", "application/pdf"]
+allowed_mime_types = ["image/jpeg", "image/png", "application/pdf"]
 
 # Other local storage buckets (example)
 # [storage.buckets.images]

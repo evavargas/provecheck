@@ -6,6 +6,9 @@ export interface PdfData {
   taskShortId: string;
   orgName: string;
   locale: 'es-UY' | 'en';
+  timezone: string;
+  /** PNG or JPEG bytes of the organization's logo, when it uploaded one. */
+  logo: { data: Buffer; format: 'png' | 'jpg' } | null;
   recipient: string;
   address: string;
   serviceType: string | null;
@@ -75,6 +78,7 @@ const s = StyleSheet.create({
   page: { padding: 40, paddingBottom: 60, fontFamily: 'Helvetica', fontSize: 10, color: ink },
   head: { borderBottomWidth: 2, borderBottomColor: primary, paddingBottom: 10, marginBottom: 14 },
   org: { fontSize: 11, color: muted },
+  logo: { height: 44, objectFit: 'contain', objectPosition: 'left', marginBottom: 6 },
   title: { fontSize: 20, fontFamily: 'Helvetica-Bold', color: primary },
   row: { flexDirection: 'row', marginBottom: 4 },
   label: { width: 110, color: muted },
@@ -119,7 +123,7 @@ const spans = (segs: Segs): ReactNode[] =>
 
 export function renderTaskPdf(d: PdfData): Promise<Buffer> {
   const t = T[d.locale];
-  const f = (iso: string) => formatDateTime(iso, d.locale);
+  const f = (iso: string) => formatDateTime(iso, d.locale, d.timezone);
   const line = (label: string, value: string | null) =>
     value
       ? h(

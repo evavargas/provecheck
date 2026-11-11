@@ -1,4 +1,3 @@
-import type { Job } from '../../lib/jobs.js';
 import type { Storage } from '../../lib/storage.js';
 import type { Db } from '../../plugins/db.js';
 
@@ -77,8 +76,8 @@ export function createMaintenanceHandlers(deps: { db: Db; storage: Storage }) {
   }
 
   return {
-    'expire-photos': (_job: Job) => expirePhotos(),
-    'cleanup-attachments': (_job: Job) => cleanupStale(),
+    'expire-photos': () => expirePhotos(),
+    'cleanup-attachments': () => cleanupStale(),
   };
 }
 

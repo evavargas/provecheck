@@ -594,5 +594,88 @@
       "saved": "Calificación guardada",
       "star": "{{n}} de 5 estrellas"
     }
+  },
+  "settings": {
+    "title": "Configuración",
+    "subtitle": "Datos de la organización y valores por defecto",
+    "name": "Nombre",
+    "timezone": "Zona horaria",
+    "locale": "Idioma por defecto",
+    "localeHint": "Se usa en el PDF y en el mail que se envía al cliente.",
+    "window": "Plazo de descargos por defecto (horas)",
+    "windowHint": "Cada empresa puede tener el suyo. Cambiarlo no altera tareas ya finalizadas.",
+    "windowInvalid": "Ingresá un número entero entre 1 y 8760.",
+    "save": "Guardar cambios",
+    "saved": "Configuración guardada.",
+    "logo": "Logo",
+    "logoHint": "PNG o JPG de hasta 1 MB. Aparece en el encabezado del PDF.",
+    "logoUpload": "Subir logo",
+    "logoReplace": "Cambiar logo",
+    "logoRemove": "Quitar logo",
+    "logoInvalid": "Elegí un PNG o JPG de hasta 1 MB.",
+    "none": "Sin logo",
+    "mail": "Envíos de mail",
+    "mailOk": "Configurado. Remitente: {{from}}",
+    "mailMissing": "Sin configurar: el PDF no se enviará hasta completar el acceso SMTP en el servidor.",
+    "tz": {
+      "America/Montevideo": "Montevideo",
+      "America/Argentina/Buenos_Aires": "Buenos Aires",
+      "America/Sao_Paulo": "São Paulo",
+      "America/Santiago": "Santiago",
+      "America/Bogota": "Bogotá",
+      "America/Mexico_City": "Ciudad de México",
+      "Europe/Madrid": "Madrid",
+      "UTC": "UTC"
+    },
+    "localeNames": {
+      "es-UY": "Español (Uruguay)",
+      "en": "English"
+    }
+  },
+  "audit": {
+    "title": "Auditoría",
+    "subtitle": "Quién cambió qué y cuándo",
+    "filterEntity": "Entidad",
+    "allEntities": "Todas",
+    "empty": "No hay registros.",
+    "loadMore": "Cargar más",
+    "col": {
+      "when": "Fecha",
+      "who": "Quién",
+      "entity": "Entidad",
+      "action": "Acción",
+      "changes": "Cambios"
+    },
+    "system": "Sistema",
+    "entities": {
+      "task": "Tarea",
+      "user": "Usuario",
+      "client_company": "Empresa cliente",
+      "service_type": "Tipo de servicio",
+      "objection": "Descargo",
+      "organization": "Organización"
+    },
+    "actions": {
+      "create": "Creación",
+      "update": "Edición",
+      "cancel": "Cancelación",
+      "deactivate": "Baja",
+      "reactivate": "Reactivación",
+      "reset_password": "Restablecer contraseña",
+      "first_login": "Primer ingreso",
+      "set_client_company": "Cambio de empresa",
+      "assignment_add": "Colaborador agregado",
+      "assignment_replace": "Colaborador reasignado",
+      "arrival": "Llegada",
+      "finalize": "Finalización",
+      "objection_filed": "Descargo presentado",
+      "status_change": "Cambio de estado",
+      "notes_update": "Notas internas",
+      "resend_pdf": "Reenvío de PDF",
+      "logo_update": "Logo actualizado",
+      "logo_remove": "Logo quitado"
+    },
+    "from": "antes",
+    "to": "ahora"
   }
 }

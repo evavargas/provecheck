@@ -18,6 +18,13 @@ import type {
 } from './catalogs';
 import type { TaskStatus } from './enums';
 import type {
+  AuditList,
+  ListAuditParams,
+  OrganizationDto,
+  PresignLogoInput,
+  UpdateOrganizationInput,
+} from './organization';
+import type {
   ClientTaskDto,
   ClientTaskList,
   FileObjectionInput,
@@ -248,6 +255,17 @@ export function createApiClient(opts: ApiClientOptions) {
       report: (id: string) => request<TaskReportDto>('GET', `/tasks/${id}/report`),
       pdf: (id: string) => request<TaskDocumentDto>('GET', `/tasks/${id}/pdf`),
     },
+    organization: {
+      get: () => request<OrganizationDto>('GET', '/organization'),
+      update: (input: UpdateOrganizationInput) =>
+        request<OrganizationDto>('PATCH', '/organization', input),
+      presignLogo: (input: PresignLogoInput) =>
+        request<{ uploadUrl: string }>('POST', '/organization/logo/presign', input),
+      confirmLogo: (contentType: PresignLogoInput['contentType']) =>
+        request<OrganizationDto>('POST', '/organization/logo/confirm', { contentType }),
+      removeLogo: () => request<OrganizationDto>('DELETE', '/organization/logo'),
+    },
+    audit: (params: ListAuditParams = {}) => request<AuditList>('GET', `/audit${query(params)}`),
     objections: {
       list: (params: ListObjectionsParams = {}) =>
         request<{ items: ObjectionRowDto[] }>('GET', `/objections${query(params)}`),

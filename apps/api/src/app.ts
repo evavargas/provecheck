@@ -24,6 +24,8 @@ import nodemailer, { type Transporter } from 'nodemailer';
 import { createClientTasks } from './modules/feedback/client.js';
 import { createFeedbackAdmin } from './modules/feedback/admin.js';
 import { feedbackRoutes } from './modules/feedback/routes.js';
+import { organizationRoutes } from './modules/organization/routes.js';
+import { createOrganizationService } from './modules/organization/service.js';
 import { createTasksService } from './modules/tasks/service.js';
 import { usersRoutes } from './modules/users/routes.js';
 import { createDb, type Db } from './plugins/db.js';
@@ -121,6 +123,9 @@ export async function buildApp(env: Env, overrides: { mailer?: Transporter } = {
       client: createClientTasks({ db, storage }),
     });
     await scope.register(feedbackRoutes, { feedback: createFeedbackAdmin({ db, storage }) });
+    await scope.register(organizationRoutes, {
+      org: createOrganizationService({ db, storage, env }),
+    });
     await scope.register(catalogsRoutes, { catalogs: createCatalogsService({ db }) });
   });
   return app;

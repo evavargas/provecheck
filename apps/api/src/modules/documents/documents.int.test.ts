@@ -72,6 +72,14 @@ async function activeUser(orgId: string, suffix: string, role: 'admin' | 'collab
   return (await login(NEW)).json().session.accessToken as string;
 }
 
+const storageUrl = async (path: string) => {
+  const { data, error } = await supabase.admin.storage
+    .from(env.STORAGE_BUCKET)
+    .createSignedUploadUrl(path, { upsert: true });
+  if (error) throw error;
+  return data.signedUrl;
+};
+
 // A valid 1x1 JPEG.
 const JPEG = Buffer.from(
   '/9j/4AAQSkZJRgABAQEASABIAAD/2wBDAP//////////////////////////////////////////////////////////////////////////////////////wgALCAABAAEBAREA/8QAFBABAAAAAAAAAAAAAAAAAAAAAP/aAAgBAQABPxA=',
@@ -352,5 +360,40 @@ describe('pdf and mail queue', () => {
       [taskId],
     );
     expect(outbox.rows).toEqual([{ status: 'failed', error: 'smtp down', attempts: 5 }]);
+  });
+
+  it('puts the logo in the PDF, and still sends when the logo file is gone', async () => {
+    const png = Buffer.from(
+      'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg==',
+      'base64',
+    );
+    const key = `org/${orgs[0]}/logo/logo.png`;
+    const upload = await fetch(await storageUrl(key), {
+      method: 'PUT',
+      headers: { 'content-type': 'image/png' },
+      body: png,
+    });
+    expect(upload.ok).toBe(true);
+    await db.pool.query('UPDATE organizations SET logo_key = $2 WHERE id = $1', [orgs[0], key]);
+    for (const missing of [false, true]) {
+      if (missing)
+        await db.pool.query('UPDATE organizations SET logo_key = $2 WHERE id = $1', [
+          orgs[0],
+          `org/${orgs[0]}/logo/gone.png`,
+        ]);
+      const taskId = await onSiteTask(`logo${missing}@client.test`);
+      await finalize(taskId);
+      sent.length = 0;
+      await app.worker.runOnce(orgs[0]);
+      expect(sent.map((m) => m.to)).toEqual([`logo${missing}@client.test`]);
+      const pdf = (await call('GET', `/tasks/${taskId}/pdf`, adminToken)).json();
+      expect(
+        Buffer.from(await (await fetch(pdf.url)).arrayBuffer())
+          .subarray(0, 4)
+          .toString(),
+      ).toBe('%PDF');
+    }
+    await db.pool.query('UPDATE organizations SET logo_key = NULL WHERE id = $1', [orgs[0]]);
+    await supabase.admin.storage.from(env.STORAGE_BUCKET).remove([key]);
   });
 });

@@ -2,7 +2,7 @@
 const order = (locale: string) => (locale.startsWith('en') ? 'en-GB' : locale);
 
 /** dd/mm/aaaa hh:mm, 24 hours, in the organization's zone (spec: dates are always dd/mm/aaaa). */
-export const formatDateTime = (iso: string, locale: string) =>
+export const formatDateTime = (iso: string, locale: string, timeZone = 'America/Montevideo') =>
   new Intl.DateTimeFormat(order(locale), {
     day: '2-digit',
     month: '2-digit',
@@ -10,7 +10,7 @@ export const formatDateTime = (iso: string, locale: string) =>
     hour: '2-digit',
     minute: '2-digit',
     hourCycle: 'h23',
-    timeZone: 'America/Montevideo',
+    timeZone,
   }).format(new Date(iso));
 
 export const formatTime = (iso: string, locale: string) =>

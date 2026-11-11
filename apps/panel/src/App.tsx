@@ -17,6 +17,8 @@ import { ServiceTypesPage } from './features/service-types/ServiceTypesPage';
 import { TasksPage } from './features/tasks/TasksPage';
 import { ObjectionsPage } from './features/objections/ObjectionsPage';
 import { RatingsPage } from './features/ratings/RatingsPage';
+import { AuditPage } from './features/audit/AuditPage';
+import { SettingsPage } from './features/settings/SettingsPage';
 import { UsersPage } from './features/users/UsersPage';
 import { AppShell } from './layout/AppShell';
 import { SessionContext } from './session';
@@ -115,6 +117,8 @@ export function App() {
             <Route path="/tasks" element={<TasksPage />} />
             <Route path="/objections" element={<ObjectionsPage />} />
             <Route path="/ratings" element={<RatingsPage />} />
+            <Route path="/audit" element={<AuditPage />} />
+            <Route path="/settings" element={<SettingsPage />} />
             <Route path="/companies" element={<CompaniesPage />} />
             <Route path="/users" element={<UsersPage />} />
             <Route path="/service-types" element={<ServiceTypesPage />} />

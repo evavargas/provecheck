@@ -594,5 +594,88 @@
       "saved": "Rating saved",
       "star": "{{n}} of 5 stars"
     }
+  },
+  "settings": {
+    "title": "Settings",
+    "subtitle": "Organization details and defaults",
+    "name": "Name",
+    "timezone": "Time zone",
+    "locale": "Default language",
+    "localeHint": "Used in the PDF and in the mail sent to the client.",
+    "window": "Default objection window (hours)",
+    "windowHint": "Each company can have its own. Changing it does not alter finished tasks.",
+    "windowInvalid": "Enter a whole number between 1 and 8760.",
+    "save": "Save changes",
+    "saved": "Settings saved.",
+    "logo": "Logo",
+    "logoHint": "PNG or JPG up to 1 MB. It appears in the PDF header.",
+    "logoUpload": "Upload logo",
+    "logoReplace": "Replace logo",
+    "logoRemove": "Remove logo",
+    "logoInvalid": "Pick a PNG or JPG up to 1 MB.",
+    "none": "No logo",
+    "mail": "Mail delivery",
+    "mailOk": "Configured. Sender: {{from}}",
+    "mailMissing": "Not configured: the PDF will not be sent until the SMTP access is set up on the server.",
+    "tz": {
+      "America/Montevideo": "Montevideo",
+      "America/Argentina/Buenos_Aires": "Buenos Aires",
+      "America/Sao_Paulo": "São Paulo",
+      "America/Santiago": "Santiago",
+      "America/Bogota": "Bogotá",
+      "America/Mexico_City": "Mexico City",
+      "Europe/Madrid": "Madrid",
+      "UTC": "UTC"
+    },
+    "localeNames": {
+      "es-UY": "Español (Uruguay)",
+      "en": "English"
+    }
+  },
+  "audit": {
+    "title": "Audit",
+    "subtitle": "Who changed what and when",
+    "filterEntity": "Entity",
+    "allEntities": "All",
+    "empty": "No entries.",
+    "loadMore": "Load more",
+    "col": {
+      "when": "Date",
+      "who": "Who",
+      "entity": "Entity",
+      "action": "Action",
+      "changes": "Changes"
+    },
+    "system": "System",
+    "entities": {
+      "task": "Task",
+      "user": "User",
+      "client_company": "Client company",
+      "service_type": "Service type",
+      "objection": "Objection",
+      "organization": "Organization"
+    },
+    "actions": {
+      "create": "Created",
+      "update": "Edited",
+      "cancel": "Cancelled",
+      "deactivate": "Deactivated",
+      "reactivate": "Reactivated",
+      "reset_password": "Password reset",
+      "first_login": "First login",
+      "set_client_company": "Company changed",
+      "assignment_add": "Collaborator added",
+      "assignment_replace": "Collaborator reassigned",
+      "arrival": "Arrival",
+      "finalize": "Finalized",
+      "objection_filed": "Objection filed",
+      "status_change": "Status change",
+      "notes_update": "Internal notes",
+      "resend_pdf": "PDF resent",
+      "logo_update": "Logo updated",
+      "logo_remove": "Logo removed"
+    },
+    "from": "before",
+    "to": "now"
   }
 }

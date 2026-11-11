@@ -16,4 +16,6 @@ Field-service management: admin panel (web), collaborator/client app (Expo, mobi
 - All code, identifiers, comments, commits and logs in English. Spanish only in `packages/shared/i18n/es.json` and the functional spec. i18n keys in English.
 - No hardcoded UI strings; no avatars/photos of people; never use the Supabase service role from a client.
 - Never commit secrets (`.env` is ignored). Mail goes through Gmail SMTP with an app password.
+- The bucket must allow `image/jpeg`, `image/png` and `application/pdf` (see `supabase/config.toml`; create it the same way in production). Background jobs live in the `jobs` table and run inside the API process; `expire-photos` and `cleanup-attachments` are queued daily at 06:00 UTC.
+- When testing, start the API without `tsx watch` and with `SMTP_USER=` empty, or the worker will send real mail from the Gmail account.
 - Storage is Supabase Storage (private bucket, signed URLs). It has no lifecycle rules, so the `expire-photos` job deletes objects.

@@ -19,6 +19,8 @@ interface TaskRow {
   objection_deadline_at: Date;
   org_name: string;
   default_locale: 'es-UY' | 'en';
+  timezone: string;
+  logo_key: string | null;
   company_name: string | null;
   company_email: string | null;
   client_user_name: string | null;
@@ -30,7 +32,7 @@ interface TaskRow {
 const load = async (db: Db, taskId: string) => {
   const { rows } = await db.pool.query<TaskRow>(
     `SELECT t.id, t.organization_id, t.address, t.recipient_name, t.scheduled_start_at, t.completed_at, t.objection_deadline_at,
-            o.name AS org_name, o.default_locale, c.legal_name AS company_name, c.email AS company_email,
+            o.name AS org_name, o.default_locale, o.timezone, o.logo_key, c.legal_name AS company_name, c.email AS company_email,
             cu.name AS client_user_name, cu.email::text AS client_user_email, st.name AS service_type, r.content_json
      FROM tasks t JOIN organizations o ON o.id = t.organization_id JOIN task_reports r ON r.task_id = t.id
      LEFT JOIN client_companies c ON c.id = t.client_company_id LEFT JOIN users cu ON cu.id = t.client_user_id
@@ -73,6 +75,16 @@ export function createDocumentHandlers(deps: {
       [taskId],
     );
     const photos = await Promise.all(photoRows.rows.map((p) => storage.download(p.pdf_key)));
+    // A missing or broken logo never blocks the record: the PDF just goes without it.
+    const logo = t.logo_key
+      ? await storage.download(t.logo_key).then(
+          (data) => ({
+            data,
+            format: t.logo_key!.endsWith('.png') ? ('png' as const) : ('jpg' as const),
+          }),
+          () => null,
+        )
+      : null;
     const shortHash = createHash('sha256')
       .update(JSON.stringify(t.content_json))
       .update(photoRows.rows.map((p) => p.sha256 ?? '').join(','))
@@ -83,6 +95,8 @@ export function createDocumentHandlers(deps: {
       taskShortId: t.id.slice(0, 8).toUpperCase(),
       orgName: t.org_name,
       locale: t.default_locale,
+      timezone: t.timezone,
+      logo,
       recipient: t.company_name ?? t.client_user_name ?? '',
       address: t.address,
       serviceType: t.service_type,
@@ -137,9 +151,16 @@ export function createDocumentHandlers(deps: {
       if (!doc.rows[0]) throw new Error('the PDF does not exist yet');
       const pdf = await storage.download(doc.rows[0].pdf_key);
       const es = t.default_locale !== 'en';
-      const date = formatDateTime(t.completed_at.toISOString(), t.default_locale).slice(0, 10);
+      const date = formatDateTime(t.completed_at.toISOString(), t.default_locale, t.timezone).slice(
+        0,
+        10,
+      );
       const where = t.company_name ?? t.address;
-      const deadline = formatDateTime(t.objection_deadline_at.toISOString(), t.default_locale);
+      const deadline = formatDateTime(
+        t.objection_deadline_at.toISOString(),
+        t.default_locale,
+        t.timezone,
+      );
       const attach = pdf.length < MAIL_ATTACHMENT_LIMIT;
       const link = attach ? null : await storage.signedRead(doc.rows[0].pdf_key, 7 * 24 * 3600);
       const appLink = env.APP_URL

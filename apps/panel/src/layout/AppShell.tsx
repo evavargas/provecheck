@@ -35,8 +35,8 @@ const NAV: NavItem[] = [
   { key: 'users', icon: Users, to: '/users' },
   { key: 'ratings', icon: Star, to: '/ratings' },
   { key: 'serviceTypes', icon: Wrench, to: '/service-types' },
-  { key: 'audit', icon: History },
-  { key: 'settings', icon: Settings },
+  { key: 'audit', icon: History, to: '/audit' },
+  { key: 'settings', icon: Settings, to: '/settings' },
 ];
 
 export function AppShell({ children }: { children: ReactNode }) {
