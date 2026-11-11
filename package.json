@@ -11,7 +11,9 @@
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "typecheck": "pnpm -r typecheck",
-    "test": "pnpm -r test"
+    "test": "pnpm -r test",
+    "db:reset": "supabase db reset",
+    "db:test": "docker exec -i supabase_db_provecheck psql -U postgres -v ON_ERROR_STOP=1 -q < supabase/tests/rls.sql"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
