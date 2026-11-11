@@ -12,6 +12,11 @@ const schema = z.object({
         .map((s) => s.trim())
         .filter(Boolean),
     ),
+  DATABASE_URL: z.string().min(1),
+  SUPABASE_URL: z.string().url(),
+  SUPABASE_ANON_KEY: z.string().min(1),
+  SUPABASE_SERVICE_ROLE_KEY: z.string().min(1),
+  LOGIN_MAX_ATTEMPTS: z.coerce.number().int().positive().default(5),
 });
 
 export type Env = z.infer<typeof schema>;

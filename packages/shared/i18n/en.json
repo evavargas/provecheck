@@ -1,11 +1,42 @@
 {
-  "app": { "name": "ProveCheck" },
-  "common": { "loading": "Loading…", "retry": "Retry" },
+  "app": {
+    "name": "ProveCheck"
+  },
+  "common": {
+    "loading": "Loading…",
+    "retry": "Retry"
+  },
   "errors": {
-    "validation_failed": "The data you entered is not valid.",
-    "unauthorized": "You need to sign in.",
-    "forbidden": "You are not allowed to do this.",
-    "not_found": "We could not find what you are looking for.",
-    "internal": "Something went wrong. Please try again."
+    "VALIDATION_ERROR": "The data you entered is not valid.",
+    "UNAUTHORIZED": "You need to sign in.",
+    "FORBIDDEN": "You are not allowed to do this.",
+    "NOT_FOUND": "We could not find what you are looking for.",
+    "INVALID_STATE_TRANSITION": "That action is not possible in the current state.",
+    "IDENTIFIER_TAKEN": "That username or email is already in use.",
+    "INVALID_CREDENTIALS": "Wrong username or password.",
+    "ACCOUNT_INACTIVE": "Your account is deactivated.",
+    "PASSWORD_CHANGE_REQUIRED": "You must change your password to continue.",
+    "RATE_LIMITED": "Too many attempts. Wait a moment and try again.",
+    "INTERNAL": "Something went wrong. Please try again."
+  },
+  "auth": {
+    "title": "Sign in",
+    "identifier": "Username or email",
+    "password": "Password",
+    "show": "Show password",
+    "hide": "Hide password",
+    "submit": "Sign in",
+    "forgotHint": "If you forgot your password, ask your administrator.",
+    "adminOnly": "This account cannot access the panel.",
+    "firstLogin": {
+      "title": "Confirm your email and choose a password",
+      "email": "Email",
+      "newPassword": "New password",
+      "repeatPassword": "Repeat password",
+      "confirmEmail": "I confirm this email is mine",
+      "submit": "Save and continue",
+      "mismatch": "Passwords do not match.",
+      "tooShort": "Use at least 10 characters."
+    }
   }
 }

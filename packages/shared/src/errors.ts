@@ -1,14 +1,22 @@
-// Stable error codes shared by API and clients; clients map them to i18n keys `errors.<code>`.
+// Stable error codes shared by API and clients (spec 8.3). Clients translate via i18n key `errors.<code>`.
 export const ERROR_CODES = [
-  'validation_failed',
-  'unauthorized',
-  'forbidden',
-  'not_found',
-  'internal',
+  'UNAUTHORIZED',
+  'FORBIDDEN',
+  'NOT_FOUND',
+  'VALIDATION_ERROR',
+  'INVALID_STATE_TRANSITION',
+  'IDENTIFIER_TAKEN',
+  'INVALID_CREDENTIALS',
+  'ACCOUNT_INACTIVE',
+  'PASSWORD_CHANGE_REQUIRED',
+  'RATE_LIMITED',
+  'INTERNAL',
 ] as const;
 export type ErrorCode = (typeof ERROR_CODES)[number];
 
 export interface ApiError {
   code: ErrorCode;
+  message?: string;
+  details?: Record<string, unknown>;
   requestId?: string;
 }

@@ -1,4 +1,4 @@
-export const USER_ROLES = ['admin', 'collaborator', 'client'] as const;
+export const USER_ROLES = ['admin', 'collaborator', 'client_user'] as const;
 export type UserRole = (typeof USER_ROLES)[number];
 
 export const THEME_PREFERENCES = ['light', 'dark', 'system'] as const;

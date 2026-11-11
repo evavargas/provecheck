@@ -1,11 +1,42 @@
 {
-  "app": { "name": "ProveCheck" },
-  "common": { "loading": "Cargando…", "retry": "Reintentar" },
+  "app": {
+    "name": "ProveCheck"
+  },
+  "common": {
+    "loading": "Cargando…",
+    "retry": "Reintentar"
+  },
   "errors": {
-    "validation_failed": "Los datos ingresados no son válidos.",
-    "unauthorized": "Tenés que iniciar sesión.",
-    "forbidden": "No tenés permiso para hacer esto.",
-    "not_found": "No encontramos lo que buscás.",
-    "internal": "Algo salió mal. Probá de nuevo."
+    "VALIDATION_ERROR": "Los datos ingresados no son válidos.",
+    "UNAUTHORIZED": "Tenés que iniciar sesión.",
+    "FORBIDDEN": "No tenés permiso para hacer esto.",
+    "NOT_FOUND": "No encontramos lo que buscás.",
+    "INVALID_STATE_TRANSITION": "Esa acción no se puede hacer en el estado actual.",
+    "IDENTIFIER_TAKEN": "Ese usuario o mail ya está en uso.",
+    "INVALID_CREDENTIALS": "Usuario o contraseña incorrectos.",
+    "ACCOUNT_INACTIVE": "Tu cuenta está desactivada.",
+    "PASSWORD_CHANGE_REQUIRED": "Tenés que cambiar tu contraseña para continuar.",
+    "RATE_LIMITED": "Demasiados intentos. Esperá un momento y probá de nuevo.",
+    "INTERNAL": "Algo salió mal. Probá de nuevo."
+  },
+  "auth": {
+    "title": "Iniciar sesión",
+    "identifier": "Usuario o mail",
+    "password": "Contraseña",
+    "show": "Mostrar contraseña",
+    "hide": "Ocultar contraseña",
+    "submit": "Ingresar",
+    "forgotHint": "Si olvidaste tu contraseña, pedísela a tu administrador.",
+    "adminOnly": "Esta cuenta no tiene acceso al panel.",
+    "firstLogin": {
+      "title": "Confirmá tu mail y elegí tu contraseña",
+      "email": "Mail",
+      "newPassword": "Nueva contraseña",
+      "repeatPassword": "Repetir contraseña",
+      "confirmEmail": "Confirmo que este mail es mío",
+      "submit": "Guardar y continuar",
+      "mismatch": "Las contraseñas no coinciden.",
+      "tooShort": "Usá al menos 10 caracteres."
+    }
   }
 }
