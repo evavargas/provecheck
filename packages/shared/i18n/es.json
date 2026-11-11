@@ -35,7 +35,11 @@
     "HAS_PENDING_TASKS": "Tiene tareas pendientes. Reasignalas antes de dar de baja.",
     "NAME_TAKEN": "Ya existe uno con ese nombre.",
     "EMPTY_ASSIGNMENT": "La tarea necesita al menos un colaborador.",
-    "ALREADY_FINALIZED": "Otro colaborador ya finalizó esta tarea."
+    "ALREADY_FINALIZED": "Otro colaborador ya finalizó esta tarea.",
+    "PHOTO_LIMIT_EXCEEDED": "Un registro admite hasta 25 fotos.",
+    "PHOTOS_NOT_CONFIRMED": "Hay fotos que todavía no terminaron de subirse.",
+    "PDF_PENDING": "El PDF todavía se está generando.",
+    "RECIPIENT_REQUIRED": "Esta tarea no tiene un correo al que enviar el PDF."
   },
   "auth": {
     "title": "Iniciar sesión",

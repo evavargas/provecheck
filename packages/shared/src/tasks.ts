@@ -163,6 +163,8 @@ export const finalizeInput = z
     contentJson: reportContentSchema,
     deviceCompletedAt: z.string().datetime({ offset: true }),
     deviceSentAt: z.string().datetime({ offset: true }),
+    // Evidence photos already uploaded and confirmed, in display order (RN-17: at most 25).
+    photoIds: z.array(z.string().uuid()).max(25).default([]),
   })
   .strict();
 export type FinalizeInput = z.input<typeof finalizeInput>;
@@ -173,4 +175,46 @@ export interface ReportDto {
   html: string;
   completedBy: string;
   completedAt: string;
+}
+
+/** Largest allowed size for each stored version of a photo, after compression on the device (spec 8.4). */
+export const MAX_PHOTO_BYTES = 3 * 1024 * 1024;
+export const MAX_PHOTOS_PER_REPORT = 25;
+
+export const presignPhotoInput = z
+  .object({
+    photoId: z.string().uuid(),
+    position: z.number().int().min(0).max(24),
+    bytes: z.number().int().positive().max(MAX_PHOTO_BYTES),
+    sha256: z
+      .string()
+      .regex(/^[a-f0-9]{64}$/)
+      .optional(),
+  })
+  .strict();
+export type PresignPhotoInput = z.input<typeof presignPhotoInput>;
+
+export interface PresignedPhotoDto {
+  photoId: string;
+  /** PUT the compressed JPEG for each version to its URL. */
+  uploads: { original: string; thumb: string; pdf: string };
+}
+
+export interface ReportPhotoDto {
+  id: string;
+  position: number;
+  status: 'uploading' | 'uploaded' | 'expired';
+  /** Short-lived read URLs; absent once the photo expired (RN-16). */
+  thumbUrl: string | null;
+  originalUrl: string | null;
+}
+
+export interface TaskReportDto extends ReportDto {
+  photos: ReportPhotoDto[];
+}
+
+export interface TaskDocumentDto {
+  url: string;
+  version: number;
+  generatedAt: string;
 }

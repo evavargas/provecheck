@@ -5,6 +5,7 @@ import {
   createTaskInput,
   draftInput,
   finalizeInput,
+  presignPhotoInput,
   listTasksQuery,
   updateTaskInput,
 } from '@provecheck/shared';
@@ -13,17 +14,20 @@ import { z } from 'zod';
 import { requireAdmin } from '../../plugins/auth-guard.js';
 import { AppError } from '../../lib/errors.js';
 import type { CollaboratorTasks } from './collaborator.js';
+import type { TaskMedia } from './media.js';
 import type { TasksService } from './service.js';
 
 const idParams = z.object({ id: z.string().uuid() });
+const photoParams = idParams.extend({ photoId: z.string().uuid() });
+const resendInput = z.object({ recipientOverride: z.string().email().optional() }).strict();
 const assignmentParams = idParams.extend({ aid: z.string().uuid() });
 
 // Admin routes check the role per route; shared paths return a DTO by role (RN-13).
 export async function tasksRoutes(
   app: FastifyInstance,
-  opts: { tasks: TasksService; collab: CollaboratorTasks },
+  opts: { tasks: TasksService; collab: CollaboratorTasks; media: TaskMedia },
 ) {
-  const { tasks, collab } = opts;
+  const { tasks, collab, media } = opts;
   const admin = { preHandler: async (req: FastifyRequest) => requireAdmin(req) };
   const collaboratorOnly = (req: FastifyRequest) => {
     if (req.auth.role !== 'collaborator') throw new AppError('FORBIDDEN');
@@ -52,6 +56,33 @@ export async function tasksRoutes(
   app.post('/tasks/:id/finalize', async (req) => {
     collaboratorOnly(req);
     return collab.finalize(req.auth, idParams.parse(req.params).id, finalizeInput.parse(req.body));
+  });
+  app.post('/tasks/:id/photos/presign', async (req) => {
+    collaboratorOnly(req);
+    return media.presign(
+      req.auth,
+      idParams.parse(req.params).id,
+      presignPhotoInput.parse(req.body),
+    );
+  });
+  app.post('/tasks/:id/photos/:photoId/confirm', async (req, reply) => {
+    collaboratorOnly(req);
+    const p = photoParams.parse(req.params);
+    await media.confirm(req.auth, p.id, p.photoId);
+    return reply.status(204).send();
+  });
+  app.get('/tasks/:id/report', async (req) => {
+    if (req.auth.role === 'client_user') throw new AppError('FORBIDDEN');
+    return media.report(req.auth, idParams.parse(req.params).id);
+  });
+  app.get('/tasks/:id/pdf', async (req) => media.document(req.auth, idParams.parse(req.params).id));
+  app.post('/tasks/:id/resend-pdf', admin, async (req, reply) => {
+    await media.resend(
+      req.auth,
+      idParams.parse(req.params).id,
+      resendInput.parse(req.body ?? {}).recipientOverride,
+    );
+    return reply.status(204).send();
   });
   app.get('/tasks/:id/draft', async (req) => {
     collaboratorOnly(req);

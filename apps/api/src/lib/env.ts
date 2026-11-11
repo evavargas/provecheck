@@ -16,6 +16,15 @@ const schema = z.object({
   SUPABASE_URL: z.string().url(),
   SUPABASE_ANON_KEY: z.string().min(1),
   SUPABASE_SERVICE_ROLE_KEY: z.string().min(1),
+  STORAGE_BUCKET: z.string().default('provecheck'),
+  // Gmail SMTP with an app password. Without them mail jobs fail visibly instead of silently dropping the PDF.
+  SMTP_HOST: z.string().default('smtp.gmail.com'),
+  SMTP_PORT: z.coerce.number().int().default(465),
+  SMTP_USER: z.string().default(''),
+  SMTP_PASSWORD: z.string().default(''),
+  MAIL_FROM: z.string().default(''),
+  /** Public URL of the web app, used for the "view in the app" link in the mail. */
+  APP_URL: z.string().default(''),
   LOGIN_MAX_ATTEMPTS: z.coerce.number().int().positive().default(5),
 });
 

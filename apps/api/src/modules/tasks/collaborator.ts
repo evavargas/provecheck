@@ -12,6 +12,7 @@ import type pg from 'pg';
 import type { z } from 'zod';
 import { audit } from '../../lib/audit.js';
 import { AppError } from '../../lib/errors.js';
+import { enqueue } from '../../lib/jobs.js';
 import type { Actor, Db } from '../../plugins/db.js';
 
 interface Row {
@@ -153,7 +154,11 @@ export function createCollaboratorTasks(deps: { db: Db }) {
     },
 
     /** F8: one record per task (RN-9). The first finalize wins; the same reportId again is an idempotent retry. */
-    async finalize(actor: Actor, id: string, input: FinalizeInput & { contentJson: unknown }) {
+    async finalize(
+      actor: Actor,
+      id: string,
+      input: FinalizeInput & { contentJson: unknown; photoIds: string[] },
+    ) {
       const content = input.contentJson as Parameters<typeof renderReportHtml>[0];
       return db.asActor(actor, async (c) => {
         await getRow(c, id, actor.id);
@@ -211,7 +216,22 @@ export function createCollaboratorTasks(deps: { db: Db }) {
           `UPDATE tasks SET status = 'completed', completed_at = $2, received_at = $3, objection_deadline_at = $4, updated_at = now() WHERE id = $1`,
           [id, new Date(correctedMs), new Date(received), deadline],
         );
+        // Only the caller's own, fully uploaded photos can join the record, in the order they sent (RN-17).
+        if (input.photoIds.length) {
+          const photos = await c.query(
+            `SELECT id FROM task_photos WHERE task_id = $1 AND uploaded_by = $2 AND status = 'uploaded' AND id = ANY($3)`,
+            [id, actor.id, input.photoIds],
+          );
+          if (photos.rowCount !== input.photoIds.length) throw new AppError('PHOTOS_NOT_CONFIRMED');
+          await c.query(
+            `UPDATE task_photos p SET position = o.pos - 1 FROM unnest($2::uuid[]) WITH ORDINALITY AS o(pid, pos)
+             WHERE p.id = o.pid AND p.task_id = $1`,
+            [id, input.photoIds],
+          );
+        }
         await c.query('DELETE FROM task_report_drafts WHERE task_id = $1', [id]);
+        // RN-5: the PDF and the mail are queued in the same transaction, so the record never exists without them.
+        await enqueue(c, actor.orgId, 'generate-pdf', { taskId: id });
         await audit(c, {
           orgId: actor.orgId,
           actorId: actor.id,

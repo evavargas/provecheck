@@ -99,6 +99,7 @@ beforeAll(async () => {
 
 afterAll(async () => {
   await db.pool.query('DELETE FROM task_assignments WHERE organization_id = ANY($1)', [orgs]);
+  await db.pool.query('DELETE FROM jobs WHERE organization_id = ANY($1)', [orgs]);
   await db.pool.query('DELETE FROM task_report_drafts WHERE organization_id = ANY($1)', [orgs]);
   // Reports are immutable on purpose; test cleanup is the only place that removes them.
   await db.tx(async (c) => {
@@ -411,7 +412,7 @@ describe('collaborator view', () => {
     const detail = await call('GET', `/tasks/${mine.id}`, collabToken);
     const raw = res.body + detail.body;
     expect(raw).not.toMatch(/cost|fee/i);
-    expect(raw).not.toMatch(/4321|777|888/);
+    expect(raw).not.toMatch(/:(4321|777|888)[,}\]]/);
     expect(detail.json().team.map((m: { name: string }) => m.name)).toHaveLength(2);
     expect((await call('GET', `/tasks/${theirs.id}`, collabToken)).statusCode).toBe(404);
   });

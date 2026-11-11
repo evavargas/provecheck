@@ -15,12 +15,17 @@ import { catalogsRoutes } from './modules/catalogs/routes.js';
 import { createCatalogsService } from './modules/catalogs/service.js';
 import { tasksRoutes } from './modules/tasks/routes.js';
 import { createCollaboratorTasks } from './modules/tasks/collaborator.js';
+import { createTaskMedia } from './modules/tasks/media.js';
+import { createStorage } from './lib/storage.js';
+import { createDocumentHandlers } from './modules/documents/handlers.js';
+import { createWorker, type Worker } from './lib/jobs.js';
+import nodemailer, { type Transporter } from 'nodemailer';
 import { createTasksService } from './modules/tasks/service.js';
 import { usersRoutes } from './modules/users/routes.js';
 import { createDb } from './plugins/db.js';
 import { createSupabase } from './plugins/supabase.js';
 
-export async function buildApp(env: Env) {
+export async function buildApp(env: Env, overrides: { mailer?: Transporter } = {}) {
   const app = Fastify({
     logger: {
       level: env.LOG_LEVEL,
@@ -37,6 +42,22 @@ export async function buildApp(env: Env) {
 
   const db = createDb(env.DATABASE_URL);
   const supabase = createSupabase(env);
+  const storage = createStorage(supabase, env.STORAGE_BUCKET);
+  const mailer =
+    overrides.mailer ??
+    nodemailer.createTransport({
+      host: env.SMTP_HOST,
+      port: env.SMTP_PORT,
+      secure: env.SMTP_PORT === 465,
+      auth: { user: env.SMTP_USER, pass: env.SMTP_PASSWORD },
+    });
+  // Jobs run in this process (spec 9); `server.ts` starts the loop, tests call `runOnce`.
+  const worker = createWorker({
+    db,
+    handlers: createDocumentHandlers({ db, storage, mailer, env }),
+    log: app.log,
+  });
+  app.decorate('worker', worker);
   app.addHook('onClose', async () => {
     await db.pool.end();
   });
@@ -88,10 +109,17 @@ export async function buildApp(env: Env) {
     await scope.register(tasksRoutes, {
       tasks: createTasksService({ db }),
       collab: createCollaboratorTasks({ db }),
+      media: createTaskMedia({ db, storage }),
     });
     await scope.register(catalogsRoutes, { catalogs: createCatalogsService({ db }) });
   });
   return app;
+}
+
+declare module 'fastify' {
+  interface FastifyInstance {
+    worker: Worker;
+  }
 }
 
 export type App = Awaited<ReturnType<typeof buildApp>>;
