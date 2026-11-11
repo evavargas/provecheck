@@ -21,7 +21,8 @@
     "PASSWORD_CHANGE_REQUIRED": "You must change your password to continue.",
     "RATE_LIMITED": "Too many attempts. Wait a moment and try again.",
     "INTERNAL": "Something went wrong. Please try again.",
-    "NETWORK": "You need a connection to sign in."
+    "NETWORK": "You need a connection to sign in.",
+    "HAS_PENDING_TASKS": "There are pending tasks. Reassign them before deactivating."
   },
   "auth": {
     "title": "Sign in",

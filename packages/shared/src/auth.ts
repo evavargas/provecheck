@@ -51,6 +51,7 @@ export interface MeDto {
   theme: (typeof THEME_PREFERENCES)[number];
   locale: (typeof LOCALES)[number] | null;
   mustChangePassword: boolean;
+  organizationName: string;
 }
 
 export interface LoginResponse {

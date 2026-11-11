@@ -21,7 +21,8 @@
     "PASSWORD_CHANGE_REQUIRED": "Tenés que cambiar tu contraseña para continuar.",
     "RATE_LIMITED": "Demasiados intentos. Esperá un momento y probá de nuevo.",
     "INTERNAL": "Algo salió mal. Probá de nuevo.",
-    "NETWORK": "Necesitás conexión para ingresar."
+    "NETWORK": "Necesitás conexión para ingresar.",
+    "HAS_PENDING_TASKS": "Tiene tareas pendientes. Reasignalas antes de dar de baja."
   },
   "auth": {
     "title": "Iniciar sesión",

@@ -9,6 +9,9 @@ import type { Env } from './lib/env.js';
 import { authRoutes } from './modules/auth/routes.js';
 import { createAuthService } from './modules/auth/service.js';
 import { healthRoutes } from './modules/health/routes.js';
+import { authGuard } from './plugins/auth-guard.js';
+import { createUsersService } from './modules/users/service.js';
+import { usersRoutes } from './modules/users/routes.js';
 import { createDb } from './plugins/db.js';
 import { createSupabase } from './plugins/supabase.js';
 
@@ -69,9 +72,11 @@ export async function buildApp(env: Env) {
   );
 
   await app.register(healthRoutes);
-  await app.register(authRoutes, {
-    auth: createAuthService({ db, supabase }),
-    maxLoginAttempts: env.LOGIN_MAX_ATTEMPTS,
+  const auth = createAuthService({ db, supabase });
+  await app.register(async (scope) => {
+    authGuard(scope, auth);
+    await scope.register(authRoutes, { auth, maxLoginAttempts: env.LOGIN_MAX_ATTEMPTS });
+    await scope.register(usersRoutes, { users: createUsersService({ db, supabase }), db });
   });
   return app;
 }

@@ -26,6 +26,7 @@ interface UserRow {
   must_change_password: boolean;
   theme: MeDto['theme'];
   locale: MeDto['locale'];
+  organization_name: string;
 }
 
 export interface AuthContext extends Actor {
@@ -42,6 +43,7 @@ const toMe = (u: UserRow): MeDto => ({
   theme: u.theme,
   locale: u.locale,
   mustChangePassword: u.must_change_password,
+  organizationName: u.organization_name,
 });
 
 const toSession = (s: Session): SessionDto => ({
@@ -56,13 +58,22 @@ export function createAuthService(deps: { db: Db; supabase: Supabase }) {
   const findByIdentifier = async (identifier: string) =>
     (
       await db.pool.query<UserRow>(
-        `SELECT u.* FROM user_identifiers i JOIN users u ON u.id = i.user_id WHERE i.identifier = $1`,
+        `SELECT u.*, o.name AS organization_name FROM user_identifiers i JOIN users u ON u.id = i.user_id
+         JOIN organizations o ON o.id = u.organization_id WHERE i.identifier = $1`,
         [identifier],
       )
     ).rows[0];
 
+  const SELECT_USER =
+    'SELECT u.*, o.name AS organization_name FROM users u JOIN organizations o ON o.id = u.organization_id WHERE u.id = $1';
+
   const findById = async (id: string) =>
-    (await db.pool.query<UserRow>('SELECT * FROM users WHERE id = $1', [id])).rows[0];
+    (
+      await db.pool.query<UserRow>(
+        'SELECT u.*, o.name AS organization_name FROM users u JOIN organizations o ON o.id = u.organization_id WHERE u.id = $1',
+        [id],
+      )
+    ).rows[0];
 
   /** Returns the session, or null when the credentials are wrong. */
   const signIn = async (email: string, password: string): Promise<Session | null> => {
@@ -140,9 +151,9 @@ export function createAuthService(deps: { db: Db; supabase: Supabase }) {
             throw err;
           }
         }
-        const updated = await c.query<UserRow>(
+        await c.query(
           `UPDATE users SET email = $1, email_confirmed_at = now(), password_changed_at = now(),
-             must_change_password = false, status = 'active' WHERE id = $2 RETURNING *`,
+             must_change_password = false, status = 'active' WHERE id = $2`,
           [input.email, actorId],
         );
         await c.query(
@@ -156,7 +167,7 @@ export function createAuthService(deps: { db: Db; supabase: Supabase }) {
           email_confirm: true,
         });
         if (error) throw error;
-        return toMe(updated.rows[0]!);
+        return toMe((await c.query<UserRow>(SELECT_USER, [actorId])).rows[0]!);
       });
     },
 
@@ -200,14 +211,14 @@ export function createAuthService(deps: { db: Db; supabase: Supabase }) {
     /** Goes through RLS (`self_update`), unlike the owner-role queries above. */
     async updatePreferences(actor: Actor, input: PreferencesInput): Promise<MeDto> {
       return db.asActor(actor, async (c) => {
-        const { rows } = await c.query<UserRow>(
+        const updated = await c.query(
           `UPDATE users SET theme = COALESCE($2, theme),
              locale = CASE WHEN $3::boolean THEN $4 ELSE locale END
-           WHERE id = $1 RETURNING *`,
+           WHERE id = $1`,
           [actor.id, input.theme ?? null, input.locale !== undefined, input.locale ?? null],
         );
-        if (!rows[0]) throw new AppError('NOT_FOUND');
-        return toMe(rows[0]);
+        if (!updated.rowCount) throw new AppError('NOT_FOUND');
+        return toMe((await c.query<UserRow>(SELECT_USER, [actor.id])).rows[0]!);
       });
     },
   };

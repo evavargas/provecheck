@@ -5,3 +5,4 @@ export * from './auth';
 export * from './api-client';
 export * from './password-strength';
 export * from './logo';
+export * from './users';
