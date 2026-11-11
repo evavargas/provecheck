@@ -39,7 +39,11 @@
     "PHOTO_LIMIT_EXCEEDED": "A record allows up to 25 photos.",
     "PHOTOS_NOT_CONFIRMED": "Some photos have not finished uploading.",
     "PDF_PENDING": "The PDF is still being generated.",
-    "RECIPIENT_REQUIRED": "This task has no email to send the PDF to."
+    "RECIPIENT_REQUIRED": "This task has no email to send the PDF to.",
+    "OBJECTION_WINDOW_CLOSED": "The objection window has closed.",
+    "OBJECTION_ALREADY_EXISTS": "This service already has an objection.",
+    "RATING_WINDOW_CLOSED": "The rating window has closed.",
+    "ATTACHMENT_LIMIT_EXCEEDED": "An objection allows up to 5 images."
   },
   "auth": {
     "title": "Sign in",

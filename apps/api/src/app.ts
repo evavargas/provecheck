@@ -20,6 +20,9 @@ import { createStorage } from './lib/storage.js';
 import { createDocumentHandlers } from './modules/documents/handlers.js';
 import { createWorker, type Worker } from './lib/jobs.js';
 import nodemailer, { type Transporter } from 'nodemailer';
+import { createClientTasks } from './modules/feedback/client.js';
+import { createFeedbackAdmin } from './modules/feedback/admin.js';
+import { feedbackRoutes } from './modules/feedback/routes.js';
 import { createTasksService } from './modules/tasks/service.js';
 import { usersRoutes } from './modules/users/routes.js';
 import { createDb } from './plugins/db.js';
@@ -110,7 +113,9 @@ export async function buildApp(env: Env, overrides: { mailer?: Transporter } = {
       tasks: createTasksService({ db }),
       collab: createCollaboratorTasks({ db }),
       media: createTaskMedia({ db, storage }),
+      client: createClientTasks({ db, storage }),
     });
+    await scope.register(feedbackRoutes, { feedback: createFeedbackAdmin({ db, storage }) });
     await scope.register(catalogsRoutes, { catalogs: createCatalogsService({ db }) });
   });
   return app;

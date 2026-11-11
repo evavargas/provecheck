@@ -132,7 +132,8 @@ const create = async (over: Record<string, unknown> = {}) =>
 
 describe('access', () => {
   it('is admin only', async () => {
-    expect((await call('GET', '/tasks', clientToken)).statusCode).toBe(403);
+    expect((await call('POST', '/tasks', clientToken, newTask())).statusCode).toBe(403);
+    expect((await call('PATCH', `/tasks/${randomUUID()}`, clientToken, {})).statusCode).toBe(403);
     expect((await call('POST', '/tasks', collabToken, newTask())).statusCode).toBe(403);
     expect((await call('PATCH', `/tasks/${randomUUID()}`, collabToken, {})).statusCode).toBe(403);
   });

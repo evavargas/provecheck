@@ -39,7 +39,11 @@
     "PHOTO_LIMIT_EXCEEDED": "Un registro admite hasta 25 fotos.",
     "PHOTOS_NOT_CONFIRMED": "Hay fotos que todavía no terminaron de subirse.",
     "PDF_PENDING": "El PDF todavía se está generando.",
-    "RECIPIENT_REQUIRED": "Esta tarea no tiene un correo al que enviar el PDF."
+    "RECIPIENT_REQUIRED": "Esta tarea no tiene un correo al que enviar el PDF.",
+    "OBJECTION_WINDOW_CLOSED": "El plazo para presentar descargos venció.",
+    "OBJECTION_ALREADY_EXISTS": "Este servicio ya tiene un descargo.",
+    "RATING_WINDOW_CLOSED": "El plazo para calificar venció.",
+    "ATTACHMENT_LIMIT_EXCEEDED": "Un descargo admite hasta 5 imágenes."
   },
   "auth": {
     "title": "Iniciar sesión",
