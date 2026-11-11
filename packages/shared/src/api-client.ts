@@ -18,6 +18,8 @@ import type {
 } from './catalogs';
 import type { TaskStatus } from './enums';
 import type {
+  PresignPhotoInput,
+  PresignedPhotoDto,
   ArrivalInput,
   CollaboratorTaskDto,
   CollaboratorTaskList,
@@ -178,6 +180,10 @@ export function createApiClient(opts: ApiClientOptions) {
         request<CollaboratorTaskDto>('POST', `/tasks/${id}/arrival`, input),
       finalize: (id: string, input: FinalizeInput) =>
         request<{ report: ReportDto }>('POST', `/tasks/${id}/finalize`, input),
+      presignPhoto: (id: string, input: PresignPhotoInput) =>
+        request<PresignedPhotoDto>('POST', `/tasks/${id}/photos/presign`, input),
+      confirmPhoto: (id: string, photoId: string) =>
+        request<void>('POST', `/tasks/${id}/photos/${photoId}/confirm`),
       getDraft: (id: string) => request<{ contentJson: unknown }>('GET', `/tasks/${id}/draft`),
       saveDraft: (id: string, contentJson: unknown) =>
         request<void>('PUT', `/tasks/${id}/draft`, { contentJson }),

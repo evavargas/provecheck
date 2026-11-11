@@ -1,5 +1,6 @@
 import {
   ApiRequestError,
+  MAX_PHOTOS_PER_REPORT,
   formatTime,
   parseReportText,
   reportContentSchema,
@@ -7,14 +8,33 @@ import {
   type ReportContent,
 } from '@provecheck/shared';
 import { useLocalSearchParams, useRouter } from 'expo-router';
-import { ArrowLeft, Bold, CircleAlert, List, TriangleAlert } from 'lucide-react-native';
+import {
+  ArrowLeft,
+  Bold,
+  Camera,
+  CircleAlert,
+  Image as ImageIcon,
+  List,
+  Trash2,
+  TriangleAlert,
+} from 'lucide-react-native';
 import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
+import {
+  ActivityIndicator,
+  Image,
+  Pressable,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TextInput,
+  View,
+} from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { api } from '../../../src/api/client';
 import { Button } from '../../../src/components/Button';
 import { errorText, newId } from '../../../src/features/tasks/helpers';
+import { usePhotos } from '../../../src/features/tasks/usePhotos';
 import { useTheme } from '../../../src/theme/theme';
 
 function Preview({ content }: { content: ReportContent }) {
@@ -58,6 +78,7 @@ export default function Finish() {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [saved, setSaved] = useState(false);
+  const photos = usePhotos(id, (err) => setError(errorText(t, err)));
   const loaded = useRef(false);
   // One id per finish attempt: a retry after a dropped connection must not create a second record.
   const reportId = useRef(newId());
@@ -101,6 +122,7 @@ export default function Finish() {
         contentJson: parsed,
         deviceCompletedAt: startedAt.current,
         deviceSentAt: new Date().toISOString(),
+        photoIds: photos.doneIds,
       });
       router.dismissAll();
     } catch (err) {
@@ -114,6 +136,26 @@ export default function Finish() {
       setBusy(false);
     }
   }
+
+  const photoButton = (label: string, Icon: typeof Bold, onPress: () => void) => (
+    <Pressable
+      accessibilityRole="button"
+      accessibilityLabel={label}
+      onPress={onPress}
+      disabled={photos.items.length >= MAX_PHOTOS_PER_REPORT}
+      style={[
+        styles.tool,
+        {
+          borderColor: colors.border,
+          backgroundColor: colors.surface,
+          opacity: photos.items.length >= MAX_PHOTOS_PER_REPORT ? 0.5 : 1,
+        },
+      ]}
+    >
+      <Icon size={20} color={colors.primary} />
+      <Text style={{ color: colors.text, fontWeight: '600' }}>{label}</Text>
+    </Pressable>
+  );
 
   const tool = (label: string, Icon: typeof Bold, add: string) => (
     <Pressable
@@ -185,15 +227,81 @@ export default function Finish() {
                 {t('collab.finish.empty')}
               </Text>
             )}
+            <Text
+              accessibilityRole="header"
+              style={{ color: colors.text, fontWeight: '600', fontSize: 16 }}
+            >
+              {t('collab.finish.photosCount', {
+                n: photos.items.length,
+                max: MAX_PHOTOS_PER_REPORT,
+              })}
+            </Text>
+            <View style={styles.inline}>
+              {photoButton(t('collab.finish.camera'), Camera, () => void photos.add('camera'))}
+              {photoButton(t('collab.finish.library'), ImageIcon, () => void photos.add('library'))}
+            </View>
+            <View style={styles.grid}>
+              {photos.items.map((p) => (
+                <View
+                  key={p.id}
+                  style={[
+                    styles.thumb,
+                    { borderColor: p.status === 'error' ? colors.error : colors.border },
+                  ]}
+                >
+                  <Image
+                    source={{ uri: p.uri }}
+                    style={styles.thumbImg}
+                    accessibilityIgnoresInvertColors
+                  />
+                  {p.status === 'working' && (
+                    <View style={styles.thumbOverlay}>
+                      <ActivityIndicator color="#FFFFFF" />
+                    </View>
+                  )}
+                  <Pressable
+                    accessibilityRole="button"
+                    accessibilityLabel={t('collab.finish.remove')}
+                    onPress={() => photos.remove(p.id)}
+                    style={styles.thumbRemove}
+                    hitSlop={6}
+                  >
+                    <Trash2 size={16} color="#FFFFFF" />
+                  </Pressable>
+                </View>
+              ))}
+            </View>
+            {photos.failed && (
+              <Text style={{ color: colors.error }}>{t('collab.finish.photoError')}</Text>
+            )}
+            {photos.busy && (
+              <Text style={{ color: colors.textSecondary, fontSize: 13 }}>
+                {t('collab.finish.waitUploads')}
+              </Text>
+            )}
             <Button
               label={t('collab.finish.review')}
-              disabled={!valid}
+              disabled={!valid || photos.busy || photos.failed}
               onPress={() => setReviewing(true)}
             />
           </>
         ) : (
           <>
             <Preview content={parsed} />
+            {photos.items.length > 0 && (
+              <View style={styles.grid}>
+                {photos.items
+                  .filter((p) => p.status === 'done')
+                  .map((p) => (
+                    <Image
+                      key={p.id}
+                      source={{ uri: p.uri }}
+                      style={styles.thumbImg}
+                      accessibilityIgnoresInvertColors
+                    />
+                  ))}
+              </View>
+            )}
             {task?.myArrivedAt && (
               <Text style={{ color: colors.textSecondary }}>
                 {t('collab.finish.arrival')}: {formatTime(task.myArrivedAt, i18n.language)} ·{' '}
@@ -240,6 +348,23 @@ const styles = StyleSheet.create({
     paddingHorizontal: 14,
   },
   input: { minHeight: 220, borderWidth: 1, borderRadius: 10, padding: 12, fontSize: 16 },
+  grid: { flexDirection: 'row', flexWrap: 'wrap', gap: 8 },
+  thumb: { width: 96, height: 96, borderWidth: 1, borderRadius: 8, overflow: 'hidden' },
+  thumbImg: { width: 96, height: 96, borderRadius: 8 },
+  thumbOverlay: {
+    ...StyleSheet.absoluteFill,
+    backgroundColor: 'rgba(0,0,0,0.45)',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  thumbRemove: {
+    position: 'absolute',
+    top: 4,
+    right: 4,
+    backgroundColor: 'rgba(0,0,0,0.6)',
+    borderRadius: 12,
+    padding: 4,
+  },
   warn: {
     flexDirection: 'row',
     gap: 10,

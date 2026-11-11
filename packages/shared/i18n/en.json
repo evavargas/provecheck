@@ -428,7 +428,15 @@
       "saved": "Draft saved",
       "sending": "Sending…",
       "alreadyDone": "Another collaborator already finished this task.",
-      "empty": "Write the record to continue."
+      "empty": "Write the record to continue.",
+      "photos": "Photos",
+      "photosCount": "Photos ({{n}}/{{max}})",
+      "camera": "Camera",
+      "library": "Gallery",
+      "remove": "Remove photo",
+      "working": "Processing…",
+      "photoError": "The photo could not be uploaded. Remove it and try again.",
+      "waitUploads": "Wait for the photos to finish uploading."
     }
   }
 }

@@ -428,7 +428,15 @@
       "saved": "Borrador guardado",
       "sending": "Enviando…",
       "alreadyDone": "Otro colaborador ya finalizó esta tarea.",
-      "empty": "Escribí el registro para continuar."
+      "empty": "Escribí el registro para continuar.",
+      "photos": "Fotos",
+      "photosCount": "Fotos ({{n}}/{{max}})",
+      "camera": "Cámara",
+      "library": "Galería",
+      "remove": "Quitar foto",
+      "working": "Procesando…",
+      "photoError": "No se pudo subir la foto. Quitala e intentá de nuevo.",
+      "waitUploads": "Esperá a que terminen de subirse las fotos."
     }
   }
 }

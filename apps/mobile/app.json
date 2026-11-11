@@ -6,7 +6,18 @@
     "version": "0.0.0",
     "orientation": "portrait",
     "userInterfaceStyle": "automatic",
-    "plugins": ["expo-router", "expo-secure-store", "expo-localization"],
+    "plugins": [
+      "expo-router",
+      "expo-secure-store",
+      "expo-localization",
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "ProveCheck necesita tus fotos para adjuntar evidencia del servicio.",
+          "cameraPermission": "ProveCheck necesita la c\u00e1mara para fotografiar el servicio."
+        }
+      ]
+    ],
     "web": {
       "bundler": "metro",
       "output": "single"
