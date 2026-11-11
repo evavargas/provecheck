@@ -8,3 +8,4 @@ export * from './logo';
 export * from './users';
 export * from './catalogs';
 export * from './tasks';
+export * from './report';

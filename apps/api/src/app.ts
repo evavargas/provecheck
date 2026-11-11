@@ -14,6 +14,7 @@ import { createUsersService } from './modules/users/service.js';
 import { catalogsRoutes } from './modules/catalogs/routes.js';
 import { createCatalogsService } from './modules/catalogs/service.js';
 import { tasksRoutes } from './modules/tasks/routes.js';
+import { createCollaboratorTasks } from './modules/tasks/collaborator.js';
 import { createTasksService } from './modules/tasks/service.js';
 import { usersRoutes } from './modules/users/routes.js';
 import { createDb } from './plugins/db.js';
@@ -81,7 +82,10 @@ export async function buildApp(env: Env) {
     authGuard(scope, auth);
     await scope.register(authRoutes, { auth, maxLoginAttempts: env.LOGIN_MAX_ATTEMPTS });
     await scope.register(usersRoutes, { users: createUsersService({ db, supabase }) });
-    await scope.register(tasksRoutes, { tasks: createTasksService({ db }) });
+    await scope.register(tasksRoutes, {
+      tasks: createTasksService({ db }),
+      collab: createCollaboratorTasks({ db }),
+    });
     await scope.register(catalogsRoutes, { catalogs: createCatalogsService({ db }) });
   });
   return app;

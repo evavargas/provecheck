@@ -24,10 +24,17 @@ let adminToken: string;
 let otherAdminToken: string;
 let collabToken: string;
 let collabId: string;
+let collab2Token: string;
 let collab2Id: string;
 let clientUserId: string;
+let clientToken: string;
 
-const call = (method: 'GET' | 'POST' | 'PATCH', url: string, token: string, payload?: unknown) =>
+const call = (
+  method: 'GET' | 'POST' | 'PATCH' | 'PUT',
+  url: string,
+  token: string,
+  payload?: unknown,
+) =>
   app.inject({
     method,
     url,
@@ -84,12 +91,21 @@ beforeAll(async () => {
   otherAdminToken = await activeUser(orgs[1]!, 'tother', 'admin');
   collabToken = await activeUser(orgs[0]!, 'tcollab', 'collaborator');
   collabId = await userId(collabToken);
-  collab2Id = await userId(await activeUser(orgs[0]!, 'tcollab2', 'collaborator'));
-  clientUserId = await userId(await activeUser(orgs[0]!, 'tclient', 'client_user'));
+  collab2Token = await activeUser(orgs[0]!, 'tcollab2', 'collaborator');
+  collab2Id = await userId(collab2Token);
+  clientToken = await activeUser(orgs[0]!, 'tclient', 'client_user');
+  clientUserId = await userId(clientToken);
 });
 
 afterAll(async () => {
   await db.pool.query('DELETE FROM task_assignments WHERE organization_id = ANY($1)', [orgs]);
+  await db.pool.query('DELETE FROM task_report_drafts WHERE organization_id = ANY($1)', [orgs]);
+  // Reports are immutable on purpose; test cleanup is the only place that removes them.
+  await db.tx(async (c) => {
+    await c.query('ALTER TABLE task_reports DISABLE TRIGGER USER');
+    await c.query('DELETE FROM task_reports WHERE organization_id = ANY($1)', [orgs]);
+    await c.query('ALTER TABLE task_reports ENABLE TRIGGER USER');
+  });
   await db.pool.query('DELETE FROM tasks WHERE organization_id = ANY($1)', [orgs]);
   await db.pool.query('DELETE FROM audit_log WHERE organization_id = ANY($1)', [orgs]);
   await db.pool.query('DELETE FROM user_identifiers WHERE user_id = ANY($1)', [authIds]);
@@ -115,8 +131,9 @@ const create = async (over: Record<string, unknown> = {}) =>
 
 describe('access', () => {
   it('is admin only', async () => {
-    expect((await call('GET', '/tasks', collabToken)).statusCode).toBe(403);
+    expect((await call('GET', '/tasks', clientToken)).statusCode).toBe(403);
     expect((await call('POST', '/tasks', collabToken, newTask())).statusCode).toBe(403);
+    expect((await call('PATCH', `/tasks/${randomUUID()}`, collabToken, {})).statusCode).toBe(403);
   });
 });
 
@@ -352,5 +369,194 @@ describe('assignments', () => {
       (await call('POST', `/tasks/${t.id}/assignments`, adminToken, { collaboratorId: collab2Id }))
         .statusCode,
     ).toBe(409);
+  });
+});
+
+const NOW = () => new Date().toISOString();
+const content = {
+  blocks: [{ type: 'paragraph', content: [{ text: 'All <done>' }, { text: 'ok', bold: true }] }],
+};
+const finalizeBody = (over: Record<string, unknown> = {}) => ({
+  reportId: randomUUID(),
+  contentJson: content,
+  deviceCompletedAt: NOW(),
+  deviceSentAt: NOW(),
+  ...over,
+});
+const arrive = (id: string, token = collabToken, delayed = false) =>
+  call('POST', `/tasks/${id}/arrival`, token, {
+    deviceArrivedAt: NOW(),
+    attendanceDelayed: delayed,
+  });
+
+describe('collaborator view', () => {
+  it('sees only their open tasks, with no cost or fee anywhere (RN-13)', async () => {
+    const mine = await create({
+      costUyu: 4321,
+      description: `mine ${run}`,
+      assignments: [
+        { collaboratorId: collabId, feeUyu: 777 },
+        { collaboratorId: collab2Id, feeUyu: 888 },
+      ],
+    });
+    const theirs = await create({
+      description: `theirs ${run}`,
+      assignments: [{ collaboratorId: collab2Id }],
+    });
+    const res = await call('GET', '/tasks', collabToken);
+    expect(res.statusCode).toBe(200);
+    const ids = res.json().items.map((t: { id: string }) => t.id);
+    expect(ids).toContain(mine.id);
+    expect(ids).not.toContain(theirs.id);
+    const detail = await call('GET', `/tasks/${mine.id}`, collabToken);
+    const raw = res.body + detail.body;
+    expect(raw).not.toMatch(/cost|fee/i);
+    expect(raw).not.toMatch(/4321|777|888/);
+    expect(detail.json().team.map((m: { name: string }) => m.name)).toHaveLength(2);
+    expect((await call('GET', `/tasks/${theirs.id}`, collabToken)).statusCode).toBe(404);
+  });
+});
+
+describe('arrival', () => {
+  it('moves the task on site, is idempotent per collaborator and records the delay', async () => {
+    const t = await create({
+      assignments: [{ collaboratorId: collabId }, { collaboratorId: collab2Id }],
+    });
+    const first = await arrive(t.id, collabToken, true);
+    expect(first.statusCode).toBe(200);
+    expect(first.json()).toMatchObject({ status: 'on_site', myAttendanceDelayed: true });
+    const arrivedAt = first.json().myArrivedAt;
+    const again = await arrive(t.id, collabToken, false);
+    expect(again.json().myArrivedAt).toBe(arrivedAt);
+    expect(again.json().myAttendanceDelayed).toBe(true);
+    // The second collaborator records their own, without changing the first.
+    const second = await arrive(t.id, collab2Token);
+    expect(second.json().myArrivedAt).not.toBeNull();
+    expect(
+      (await call('GET', `/tasks/${t.id}`, adminToken))
+        .json()
+        .assignments.filter((a: { arrivedAt: string | null }) => a.arrivedAt),
+    ).toHaveLength(2);
+  });
+
+  it('rejects other people, cancelled tasks and replaced collaborators', async () => {
+    const t = await create();
+    expect((await arrive(t.id, collab2Token)).statusCode).toBe(404);
+    expect((await arrive(t.id, adminToken)).statusCode).toBe(403);
+    const replaced = t.assignments[0];
+    await call('POST', `/tasks/${t.id}/assignments/${replaced.id}/replace`, adminToken, {
+      collaboratorId: collab2Id,
+    });
+    // Once replaced, a finished-or-not task is no longer theirs to start.
+    expect((await arrive(t.id, collabToken)).statusCode).toBeGreaterThanOrEqual(404);
+    const c = await create();
+    await call('POST', `/tasks/${c.id}/cancel`, adminToken, { reason: 'x' });
+    expect((await arrive(c.id)).statusCode).toBe(409);
+  });
+});
+
+describe('finalize', () => {
+  it('needs the caller to have arrived, then creates one immutable record and the objection deadline', async () => {
+    const t = await create();
+    expect(
+      (await call('POST', `/tasks/${t.id}/finalize`, collabToken, finalizeBody())).statusCode,
+    ).toBe(409);
+    await arrive(t.id);
+    const body = finalizeBody();
+    const res = await call('POST', `/tasks/${t.id}/finalize`, collabToken, body);
+    expect(res.statusCode).toBe(200);
+    expect(res.json().report.html).toBe('<p>All &lt;done&gt;<strong>ok</strong></p>');
+
+    const done = (await call('GET', `/tasks/${t.id}`, adminToken)).json();
+    expect(done.status).toBe('completed');
+    const hours =
+      (new Date(done.objectionDeadlineAt).getTime() - new Date(done.completedAt).getTime()) /
+      3_600_000;
+    expect(Math.round(hours)).toBe(336);
+
+    // Same reportId: idempotent. Another one: ALREADY_FINALIZED with the existing record.
+    expect((await call('POST', `/tasks/${t.id}/finalize`, collabToken, body)).statusCode).toBe(200);
+    const late = await call('POST', `/tasks/${t.id}/finalize`, collabToken, finalizeBody());
+    expect(late.statusCode).toBe(409);
+    expect(late.json()).toMatchObject({
+      code: 'ALREADY_FINALIZED',
+      details: { report: { id: body.reportId } },
+    });
+    const { rowCount } = await db.pool.query(
+      `SELECT 1 FROM audit_log WHERE entity_id = $1 AND action = 'finalize'`,
+      [t.id],
+    );
+    expect(rowCount).toBe(1);
+  });
+
+  it('uses the company window and corrects the device clock drift (RN-6)', async () => {
+    const company = (
+      await call('POST', '/client-companies', adminToken, {
+        legalName: `Win ${run}`,
+        address: 'A',
+        objectionWindowHours: 48,
+      })
+    ).json();
+    const t = await create({ clientCompanyId: company.id, clientUserId: undefined });
+    await arrive(t.id);
+    const finished = new Date(Date.now() - 3 * 3_600_000).toISOString();
+    await call(
+      'POST',
+      `/tasks/${t.id}/finalize`,
+      collabToken,
+      finalizeBody({ deviceCompletedAt: finished, deviceSentAt: NOW() }),
+    );
+    const done = (await call('GET', `/tasks/${t.id}`, adminToken)).json();
+    // Finished three hours before it synced, so the completion is about three hours back.
+    const ageH = (Date.now() - new Date(done.completedAt).getTime()) / 3_600_000;
+    expect(ageH).toBeGreaterThan(2.9);
+    expect(ageH).toBeLessThan(3.1);
+    const window =
+      (new Date(done.objectionDeadlineAt).getTime() - new Date(done.completedAt).getTime()) /
+      3_600_000;
+    expect(Math.round(window)).toBe(48);
+  });
+
+  it('lets only one of two collaborators finish, and refuses empty records', async () => {
+    const t = await create({
+      assignments: [{ collaboratorId: collabId }, { collaboratorId: collab2Id }],
+    });
+    await arrive(t.id);
+    await arrive(t.id, collab2Token);
+    const empty = await call(
+      'POST',
+      `/tasks/${t.id}/finalize`,
+      collabToken,
+      finalizeBody({ contentJson: { blocks: [] } }),
+    );
+    expect(empty.statusCode).toBe(422);
+    const markup = await call(
+      'POST',
+      `/tasks/${t.id}/finalize`,
+      collabToken,
+      finalizeBody({ contentJson: { blocks: [{ type: 'html', content: '<b>x</b>' }] } }),
+    );
+    expect(markup.statusCode).toBe(422);
+    const [a, b] = await Promise.all([
+      call('POST', `/tasks/${t.id}/finalize`, collabToken, finalizeBody()),
+      call('POST', `/tasks/${t.id}/finalize`, collab2Token, finalizeBody()),
+    ]);
+    expect([a.statusCode, b.statusCode].sort()).toEqual([200, 409]);
+    const { rows } = await db.pool.query(
+      'SELECT count(*)::int AS n FROM task_reports WHERE task_id = $1',
+      [t.id],
+    );
+    expect(rows[0].n).toBe(1);
+  });
+
+  it('saves and returns the draft', async () => {
+    const t = await create();
+    expect((await call('GET', `/tasks/${t.id}/draft`, collabToken)).json().contentJson).toBeNull();
+    const put = await call('PUT', `/tasks/${t.id}/draft`, collabToken, { contentJson: content });
+    expect(put.statusCode).toBe(204);
+    expect((await call('GET', `/tasks/${t.id}/draft`, collabToken)).json().contentJson).toEqual(
+      content,
+    );
+    expect((await call('GET', `/tasks/${t.id}/draft`, collab2Token)).statusCode).toBe(404);
   });
 });

@@ -34,7 +34,8 @@
     "NETWORK": "You need a connection to sign in.",
     "HAS_PENDING_TASKS": "There are pending tasks. Reassign them before deactivating.",
     "NAME_TAKEN": "One with that name already exists.",
-    "EMPTY_ASSIGNMENT": "The task needs at least one collaborator."
+    "EMPTY_ASSIGNMENT": "The task needs at least one collaborator.",
+    "ALREADY_FINALIZED": "Another collaborator already completed this task."
   },
   "auth": {
     "title": "Sign in",

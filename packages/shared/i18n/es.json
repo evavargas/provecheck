@@ -34,7 +34,8 @@
     "NETWORK": "Necesitás conexión para ingresar.",
     "HAS_PENDING_TASKS": "Tiene tareas pendientes. Reasignalas antes de dar de baja.",
     "NAME_TAKEN": "Ya existe uno con ese nombre.",
-    "EMPTY_ASSIGNMENT": "La tarea necesita al menos un colaborador."
+    "EMPTY_ASSIGNMENT": "La tarea necesita al menos un colaborador.",
+    "ALREADY_FINALIZED": "Otro colaborador ya finalizó esta tarea."
   },
   "auth": {
     "title": "Iniciar sesión",

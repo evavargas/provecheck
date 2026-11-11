@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { reportContentSchema } from './report';
 import { TASK_STATUSES, type TaskStatus } from './enums';
 
 const money = z.number().min(0).max(9_999_999_999.99);
@@ -120,4 +121,56 @@ export interface TaskDto {
 export interface TaskList {
   items: TaskDto[];
   nextCursor: string | null;
+}
+
+/** What a collaborator sees (spec 8.2): no costs, no fees, no ratings. Co-assigned people appear by name only. */
+export interface CollaboratorTaskDto {
+  id: string;
+  status: TaskStatus;
+  address: string;
+  recipientName: string | null;
+  scheduledStartAt: string;
+  assignedHours: number | null;
+  description: string;
+  instructions: string | null;
+  serviceTypeName: string | null;
+  clientCompanyName: string | null;
+  /** Informational contact phone of the company (RN-4); the app offers to call it. */
+  clientCompanyPhone: string | null;
+  completedAt: string | null;
+  team: { collaboratorId: string; name: string; active: boolean; arrivedAt: string | null }[];
+  /** The caller's own arrival, if any. */
+  myArrivedAt: string | null;
+  myAttendanceDelayed: boolean;
+}
+
+export interface CollaboratorTaskList {
+  items: CollaboratorTaskDto[];
+}
+
+export const arrivalInput = z
+  .object({
+    clientEventId: z.string().uuid().optional(),
+    deviceArrivedAt: z.string().datetime({ offset: true }),
+    attendanceDelayed: z.boolean(),
+  })
+  .strict();
+export type ArrivalInput = z.input<typeof arrivalInput>;
+
+export const finalizeInput = z
+  .object({
+    reportId: z.string().uuid(),
+    contentJson: reportContentSchema,
+    deviceCompletedAt: z.string().datetime({ offset: true }),
+    deviceSentAt: z.string().datetime({ offset: true }),
+  })
+  .strict();
+export type FinalizeInput = z.input<typeof finalizeInput>;
+export const draftInput = z.object({ contentJson: z.unknown() }).strict();
+
+export interface ReportDto {
+  id: string;
+  html: string;
+  completedBy: string;
+  completedAt: string;
 }
