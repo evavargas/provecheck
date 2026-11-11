@@ -1,3 +1,12 @@
+import type {
+  Availability,
+  CompanyOptionDto,
+  CreateUserInput,
+  ListUsersParams,
+  UpdateUserInput,
+  UserDto,
+  UserList,
+} from './users';
 import type { ApiError, ErrorCode } from './errors';
 import type {
   FirstLoginInput,
@@ -31,6 +40,14 @@ export interface ApiClientOptions {
   /** Called when the refresh token is rejected, so the app can go back to the login screen. */
   onSessionLost?: () => void;
 }
+
+const query = (params: Record<string, string | number | undefined>) => {
+  const qs = new URLSearchParams();
+  for (const [k, v] of Object.entries(params))
+    if (v !== undefined && v !== '') qs.set(k, String(v));
+  const text = qs.toString();
+  return text ? `?${text}` : '';
+};
 
 export function createApiClient(opts: ApiClientOptions) {
   const doFetch = opts.fetchImpl ?? ((...args: Parameters<typeof fetch>) => fetch(...args));
@@ -99,6 +116,22 @@ export function createApiClient(opts: ApiClientOptions) {
       request<void>('POST', '/auth/change-password', input),
     updatePreferences: (input: PreferencesInput) =>
       request<MeDto>('PATCH', '/me/preferences', input),
+    users: {
+      list: (params: ListUsersParams = {}) => request<UserList>('GET', `/users${query(params)}`),
+      get: (id: string) => request<UserDto>('GET', `/users/${id}`),
+      availability: (identifier: string, exceptUserId?: string) =>
+        request<Availability>('GET', `/users/availability${query({ identifier, exceptUserId })}`),
+      create: (input: CreateUserInput) => request<UserDto>('POST', '/users', input),
+      update: (id: string, input: UpdateUserInput) =>
+        request<UserDto>('PATCH', `/users/${id}`, input),
+      setClientCompany: (id: string, clientCompanyId: string | null) =>
+        request<UserDto>('PATCH', `/users/${id}/client-company`, { clientCompanyId }),
+      deactivate: (id: string) => request<UserDto>('POST', `/users/${id}/deactivate`),
+      reactivate: (id: string) => request<UserDto>('POST', `/users/${id}/reactivate`),
+      resetPassword: (id: string, temporaryPassword: string) =>
+        request<void>('POST', `/users/${id}/reset-password`, { temporaryPassword }),
+    },
+    companyOptions: () => request<{ items: CompanyOptionDto[] }>('GET', '/client-companies'),
     async logout(): Promise<void> {
       try {
         await request<void>('POST', '/auth/logout', {});

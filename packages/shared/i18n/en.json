@@ -7,7 +7,17 @@
   "common": {
     "loading": "Loading…",
     "retry": "Retry",
-    "logout": "Sign out"
+    "logout": "Sign out",
+    "cancel": "Cancel",
+    "close": "Close",
+    "copy": "Copy",
+    "copied": "Copied",
+    "done": "Done",
+    "save": "Save",
+    "all": "All",
+    "loadMore": "Load more",
+    "noResults": "No results.",
+    "error": "We could not load the data."
   },
   "errors": {
     "VALIDATION_ERROR": "The data you entered is not valid.",
@@ -73,5 +83,106 @@
     "home": {
       "title": "Home"
     }
+  },
+  "nav": {
+    "home": "Home",
+    "tasks": "Tasks",
+    "objections": "Objections",
+    "companies": "Client companies",
+    "users": "Users",
+    "ratings": "Ratings",
+    "serviceTypes": "Service types",
+    "audit": "Audit",
+    "settings": "Settings",
+    "menu": "Open menu",
+    "close": "Close menu",
+    "soon": "Coming soon"
+  },
+  "roles": {
+    "admin": "Administrator",
+    "collaborator": "Collaborator",
+    "client_user": "Client user"
+  },
+  "status": {
+    "active": "Active",
+    "inactive": "Deactivated",
+    "pending_first_login": "Pending first login"
+  },
+  "users": {
+    "title": "Users",
+    "subtitle": "Accounts and access for collaborators, client users and administrators",
+    "new": "New user",
+    "filterSearch": "Filter by name, username or email…",
+    "filterRole": "Role",
+    "filterStatus": "Status",
+    "allRoles": "All roles",
+    "allStatuses": "All statuses",
+    "col": {
+      "name": "Name",
+      "username": "Username",
+      "email": "Email",
+      "phone": "Phone",
+      "role": "Role / Link",
+      "status": "Status",
+      "actions": "Actions"
+    },
+    "action": {
+      "edit": "Edit",
+      "reset": "Reset password",
+      "deactivate": "Deactivate",
+      "reactivate": "Reactivate user"
+    },
+    "form": {
+      "createTitle": "New user",
+      "createSubtitle": "Create credentials and define the access profile",
+      "editTitle": "Edit user",
+      "editSubtitle": "The role cannot be changed after creation",
+      "name": "Full name",
+      "username": "Username",
+      "email": "Email",
+      "phone": "Phone",
+      "role": "Role",
+      "company": "Linked client company",
+      "noCompany": "No company",
+      "companyHint": "Optional. Client users only.",
+      "tempPassword": "Temporary password",
+      "tempHint": "The user must change their password on first login.",
+      "generate": "Generate",
+      "copyPassword": "Copy password",
+      "showPassword": "Show password",
+      "hidePassword": "Hide password",
+      "create": "Create user",
+      "usernameTaken": "Username already in use",
+      "emailTaken": "Email already in use",
+      "usernameFormat": "Use 3 to 30 characters: lowercase letters, digits, dot, dash or underscore.",
+      "emailFormat": "Enter a valid email.",
+      "required": "Required field."
+    },
+    "created": {
+      "title": "User created",
+      "subtitle": "The account was created successfully",
+      "user": "Username",
+      "email": "Email",
+      "password": "Temporary password",
+      "warning": "This password is shown only once. Hand it to the user: they must change it on first login."
+    },
+    "reset": {
+      "title": "Reset password",
+      "info": "Their sessions will be closed and they must create a new password when signing in.",
+      "password": "Generated temporary password",
+      "hint": "Copy this temporary key to share it securely with the user.",
+      "confirm": "Reset",
+      "done": "Password reset. {{name}} was signed out everywhere."
+    },
+    "deactivate": {
+      "title": "Deactivate {{name}}",
+      "body": "They will lose access and their sessions will be closed. You can reactivate them at any time.",
+      "confirm": "Deactivate",
+      "pendingTitle": "They have pending tasks",
+      "pendingBody": "Reassign them before deactivating:",
+      "done": "{{name}} was deactivated."
+    },
+    "reactivated": "{{name}} was reactivated.",
+    "updated": "Changes saved."
   }
 }

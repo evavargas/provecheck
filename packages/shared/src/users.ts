@@ -48,6 +48,7 @@ export const listUsersQuery = z.object({
   cursor: z.string().max(300).optional(),
 });
 export type ListUsersQuery = z.infer<typeof listUsersQuery>;
+export type ListUsersParams = Partial<Omit<ListUsersQuery, 'limit'>> & { limit?: number };
 
 export const availabilityQuery = z.object({
   identifier: identifierSchema,

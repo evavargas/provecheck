@@ -9,6 +9,12 @@ import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { api, sessionStore } from './api/client';
 import { PreferenceControls } from './components/PreferenceControls';
+import { Route, Routes } from 'react-router-dom';
+import { useQueryClient } from '@tanstack/react-query';
+import { HomePage } from './features/home/HomePage';
+import { UsersPage } from './features/users/UsersPage';
+import { AppShell } from './layout/AppShell';
+import { SessionContext } from './session';
 import { FirstLoginPage } from './features/auth/FirstLoginPage';
 import { LoginPage } from './features/auth/LoginPage';
 import { setLocale } from './i18n';
@@ -23,7 +29,12 @@ export function App() {
   const [notice, setNotice] = useState<string | null>(null);
   const [theme, setTheme] = useState<ThemePreference>(storedTheme);
   const locale = (i18n.language as Locale) || DEFAULT_LOCALE;
-  const user = 'user' in state ? state.user : null;
+  const qc = useQueryClient();
+  const logout = () =>
+    api.logout().finally(() => {
+      qc.clear();
+      setState({ screen: 'login' });
+    });
 
   useEffect(() => applyTheme(theme), [theme]);
   // "system" must follow the OS while the page is open.
@@ -83,24 +94,24 @@ export function App() {
 
   if (state.screen === 'home') {
     return (
-      <div className="shell">
-        <header className="topbar">
-          <strong>{t('app.name')}</strong>
-          <div className="topbar-right">
-            {prefs}
-            <button
-              className="ghost"
-              onClick={() => api.logout().finally(() => setState({ screen: 'login' }))}
-            >
-              {t('common.logout')}
-            </button>
-          </div>
-        </header>
-        <main className="content">
-          <h1>{t('panel.home.title')}</h1>
-          <p>{user?.name}</p>
-        </main>
-      </div>
+      <SessionContext.Provider
+        value={{
+          user: state.user,
+          theme,
+          locale,
+          setTheme: changeTheme,
+          setLocale: changeLocale,
+          logout,
+        }}
+      >
+        <AppShell>
+          <Routes>
+            <Route path="/" element={<HomePage />} />
+            <Route path="/users" element={<UsersPage />} />
+            <Route path="*" element={<HomePage />} />
+          </Routes>
+        </AppShell>
+      </SessionContext.Provider>
     );
   }
 

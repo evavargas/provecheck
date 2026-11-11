@@ -12,6 +12,7 @@ export const lightTheme = {
   text: '#1B2528',
   textSecondary: '#5C6B70',
   border: '#D9E1E4',
+  sidebar: '#0F4C5C',
 } as const;
 
 export const darkTheme = {
@@ -27,6 +28,7 @@ export const darkTheme = {
   text: '#E6ECEE',
   textSecondary: '#9FB0B6',
   border: '#2A383D',
+  sidebar: '#0A1F25',
 } as const;
 
 export type Theme = { [K in keyof typeof lightTheme]: string };

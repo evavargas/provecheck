@@ -7,7 +7,17 @@
   "common": {
     "loading": "Cargando…",
     "retry": "Reintentar",
-    "logout": "Cerrar sesión"
+    "logout": "Cerrar sesión",
+    "cancel": "Cancelar",
+    "close": "Cerrar",
+    "copy": "Copiar",
+    "copied": "Copiado",
+    "done": "Listo",
+    "save": "Guardar",
+    "all": "Todos",
+    "loadMore": "Cargar más",
+    "noResults": "No hay resultados.",
+    "error": "No pudimos cargar los datos."
   },
   "errors": {
     "VALIDATION_ERROR": "Los datos ingresados no son válidos.",
@@ -73,5 +83,106 @@
     "home": {
       "title": "Inicio"
     }
+  },
+  "nav": {
+    "home": "Inicio",
+    "tasks": "Tareas",
+    "objections": "Descargos",
+    "companies": "Empresas cliente",
+    "users": "Usuarios",
+    "ratings": "Calificaciones",
+    "serviceTypes": "Tipos de servicio",
+    "audit": "Auditoría",
+    "settings": "Configuración",
+    "menu": "Abrir menú",
+    "close": "Cerrar menú",
+    "soon": "Próximamente"
+  },
+  "roles": {
+    "admin": "Administrador",
+    "collaborator": "Colaborador",
+    "client_user": "Usuario cliente"
+  },
+  "status": {
+    "active": "Activo",
+    "inactive": "De baja",
+    "pending_first_login": "Pendiente de primer ingreso"
+  },
+  "users": {
+    "title": "Usuarios",
+    "subtitle": "Cuentas y accesos de colaboradores, usuarios cliente y administradores",
+    "new": "Nuevo usuario",
+    "filterSearch": "Filtrar por nombre, usuario o correo…",
+    "filterRole": "Rol",
+    "filterStatus": "Estado",
+    "allRoles": "Todos los roles",
+    "allStatuses": "Todos los estados",
+    "col": {
+      "name": "Nombre",
+      "username": "Usuario",
+      "email": "Correo electrónico",
+      "phone": "Teléfono",
+      "role": "Rol / Vinculación",
+      "status": "Estado",
+      "actions": "Acciones"
+    },
+    "action": {
+      "edit": "Editar",
+      "reset": "Restablecer contraseña",
+      "deactivate": "Dar de baja",
+      "reactivate": "Reactivar usuario"
+    },
+    "form": {
+      "createTitle": "Nuevo usuario",
+      "createSubtitle": "Crear credencial y definir perfil de acceso",
+      "editTitle": "Editar usuario",
+      "editSubtitle": "El rol no se puede cambiar una vez creado",
+      "name": "Nombre completo",
+      "username": "Nombre de usuario",
+      "email": "Correo electrónico",
+      "phone": "Teléfono",
+      "role": "Rol",
+      "company": "Empresa cliente asociada",
+      "noCompany": "Sin empresa",
+      "companyHint": "Opcional. Solo para usuarios cliente.",
+      "tempPassword": "Contraseña temporal",
+      "tempHint": "El usuario deberá cambiar su contraseña en el primer ingreso.",
+      "generate": "Generar",
+      "copyPassword": "Copiar contraseña",
+      "showPassword": "Mostrar contraseña",
+      "hidePassword": "Ocultar contraseña",
+      "create": "Crear usuario",
+      "usernameTaken": "Usuario ya en uso",
+      "emailTaken": "Mail ya en uso",
+      "usernameFormat": "Usá 3 a 30 caracteres: minúsculas, números, punto, guion o guion bajo.",
+      "emailFormat": "Ingresá un mail válido.",
+      "required": "Campo obligatorio."
+    },
+    "created": {
+      "title": "Usuario creado",
+      "subtitle": "La cuenta fue dada de alta con éxito en el sistema",
+      "user": "Usuario",
+      "email": "Correo electrónico",
+      "password": "Contraseña temporal",
+      "warning": "Esta contraseña se muestra una sola vez. Entregásela al usuario: deberá cambiarla en su primer ingreso."
+    },
+    "reset": {
+      "title": "Restablecer contraseña",
+      "info": "Se cerrarán sus sesiones y tendrá que crear una contraseña nueva al ingresar.",
+      "password": "Contraseña temporal generada",
+      "hint": "Copiá esta clave provisoria para comunicársela de forma segura al usuario.",
+      "confirm": "Restablecer",
+      "done": "Contraseña restablecida. Se cerraron las sesiones de {{name}}."
+    },
+    "deactivate": {
+      "title": "Dar de baja a {{name}}",
+      "body": "Perderá el acceso y se cerrarán sus sesiones. Podés reactivarlo cuando quieras.",
+      "confirm": "Dar de baja",
+      "pendingTitle": "Tiene tareas pendientes",
+      "pendingBody": "Reasignalas antes de darlo de baja:",
+      "done": "{{name}} fue dado de baja."
+    },
+    "reactivated": "{{name}} fue reactivado.",
+    "updated": "Cambios guardados."
   }
 }

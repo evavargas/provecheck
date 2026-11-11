@@ -68,3 +68,11 @@ describe('api client', () => {
     await expect(client.me()).rejects.toMatchObject({ code: 'NETWORK' });
   });
 });
+
+describe('users api', () => {
+  it('builds the query string without empty values', async () => {
+    const t = setup([json(200, { items: [], nextCursor: null })]);
+    await t.client.users.list({ role: 'collaborator', q: '', limit: 10 });
+    expect(t.calls[0]!.url).toBe('http://api/users?role=collaborator&limit=10');
+  });
+});
