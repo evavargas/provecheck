@@ -3,6 +3,7 @@ import {
   type PresignedPhotoDto,
   type PresignPhotoInput,
   type OutboxDto,
+  type ReportContent,
   type ReportPhotoDto,
   type TaskDocumentDto,
   type TaskReportDto,
@@ -110,10 +111,11 @@ export function createTaskMedia(deps: { db: Db; storage: Storage }) {
         const r = await c.query<{
           id: string;
           content_html: string;
+          content_json: ReportContent;
           completed_by: string;
           received_at: Date;
         }>(
-          'SELECT id, content_html, completed_by, received_at FROM task_reports WHERE task_id = $1',
+          'SELECT id, content_html, content_json, completed_by, received_at FROM task_reports WHERE task_id = $1',
           [taskId],
         );
         if (!r.rows[0]) throw new AppError('NOT_FOUND');
@@ -133,6 +135,7 @@ export function createTaskMedia(deps: { db: Db; storage: Storage }) {
       return {
         id: report.id,
         html: report.content_html,
+        content: report.content_json,
         completedBy: report.completed_by,
         completedAt: report.received_at.toISOString(),
         photos: await Promise.all(

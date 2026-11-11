@@ -533,5 +533,66 @@
     "overdue": "Tarea vencida sin llegada: {{address}}",
     "seeAll": "Ver todos",
     "collaborators": "Colaboradores"
+  },
+  "client": {
+    "title": "Mis servicios",
+    "empty": "Todavía no hay servicios.",
+    "retry": "Reintentar",
+    "loadError": "No pudimos cargar tus servicios.",
+    "canRate": "Podés calificar",
+    "deadline": "Plazo para descargos hasta {{date}}",
+    "closedOn": "El plazo para presentar descargos venció el {{date}}.",
+    "detail": {
+      "service": "Servicio",
+      "address": "Dirección",
+      "recipient": "Recibió",
+      "team": "Colaboradores",
+      "arrived": "llegó {{time}}",
+      "delayed": "con demora",
+      "record": "Registro del servicio",
+      "photos": "Fotos",
+      "pdf": "Ver PDF",
+      "pdfPending": "El PDF todavía se está generando.",
+      "objection": "Tu descargo",
+      "fileObjection": "Presentar descargo",
+      "rate": "Calificar colaboradores",
+      "completedAt": "Finalizado",
+      "photoExpired": "Foto expirada",
+      "noRecord": "Este servicio todavía no tiene registro.",
+      "objectionStatus": {
+        "open": "Abierto",
+        "in_review": "En gestión",
+        "resolved": "Resuelto"
+      },
+      "imageExpired": "Imagen expirada",
+      "cancelled": "Servicio cancelado."
+    },
+    "objection": {
+      "title": "Presentar descargo",
+      "text": "Contanos qué pasó",
+      "counter": "{{n}}/4000",
+      "images": "Imágenes ({{n}}/{{max}})",
+      "add": "Agregar imágenes",
+      "camera": "Cámara",
+      "library": "Galería",
+      "remove": "Quitar imagen",
+      "note": "Solo podés presentar un descargo por servicio y no se puede editar después.",
+      "send": "Enviar descargo",
+      "confirmTitle": "¿Enviar el descargo?",
+      "confirmBody": "No vas a poder editarlo después.",
+      "confirm": "Enviar",
+      "back": "Volver",
+      "waitUploads": "Esperá a que terminen de subirse las imágenes.",
+      "imageError": "No se pudo subir una imagen. Quitala e intentá de nuevo.",
+      "needsConnection": "Necesitás conexión para enviar el descargo."
+    },
+    "rate": {
+      "title": "Calificar colaboradores",
+      "note": "Tu calificación solo la ve la empresa que presta el servicio.",
+      "comment": "Comentario (opcional)",
+      "save": "Guardar calificación",
+      "saved": "Calificación guardada",
+      "star": "{{n}} de 5 estrellas"
+    }
   }
 }

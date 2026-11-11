@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { reportContentSchema } from './report';
+import { reportContentSchema, type ReportContent } from './report';
 import { TASK_STATUSES, type TaskStatus } from './enums';
 
 const money = z.number().min(0).max(9_999_999_999.99);
@@ -210,6 +210,8 @@ export interface ReportPhotoDto {
 }
 
 export interface TaskReportDto extends ReportDto {
+  /** The structured record, so the phone can render it without HTML. */
+  content: ReportContent;
   photos: ReportPhotoDto[];
 }
 

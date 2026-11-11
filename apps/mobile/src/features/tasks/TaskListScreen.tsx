@@ -1,4 +1,10 @@
-import { formatTime, type CollaboratorTaskDto, type Locale } from '@provecheck/shared';
+import {
+  formatTime,
+  formatDayMonth,
+  type CollaboratorTaskDto,
+  type Locale,
+  type TaskStatus,
+} from '@provecheck/shared';
 import { useRouter } from 'expo-router';
 import { CircleAlert, LogOut, MapPin, RefreshCw } from 'lucide-react-native';
 import { useCallback, useEffect, useState } from 'react';
@@ -12,20 +18,24 @@ import { PreferenceBar } from '../../components/PreferenceBar';
 import { useTheme } from '../../theme/theme';
 import { errorText, sameDay } from './helpers';
 
-export function StatusPill({ status }: { status: CollaboratorTaskDto['status'] }) {
+export function StatusPill({ status }: { status: TaskStatus }) {
   const { t } = useTranslation();
   const { colors } = useTheme();
-  const onSite = status === 'on_site';
-  const bg = onSite
-    ? colors.warning
-    : status === 'completed'
-      ? colors.success
-      : colors.primaryContainer;
-  const fg = onSite ? colors.onWarning : status === 'completed' ? '#FFFFFF' : colors.primary;
+  // Amber only as a background with dark text (design system).
+  const tone =
+    status === 'on_site' || status === 'in_review'
+      ? { bg: colors.warning, fg: colors.onWarning }
+      : status === 'completed' || status === 'resolved'
+        ? { bg: colors.success, fg: '#FFFFFF' }
+        : status === 'objection_filed'
+          ? { bg: colors.error, fg: '#FFFFFF' }
+          : status === 'cancelled'
+            ? { bg: colors.border, fg: colors.text }
+            : { bg: colors.primaryContainer, fg: colors.primary };
   return (
-    <View style={[styles.pill, { backgroundColor: bg }]}>
-      <Text style={{ color: fg, fontSize: 12, fontWeight: '700' }}>
-        {t(`collab.status.${status}`)}
+    <View style={[styles.pill, { backgroundColor: tone.bg }]}>
+      <Text style={{ color: tone.fg, fontSize: 12, fontWeight: '700' }}>
+        {t(`taskStatus.${status}`)}
       </Text>
     </View>
   );
@@ -64,11 +74,7 @@ export function TaskListScreen() {
     >
       <View style={styles.row}>
         <Text style={[styles.time, { color: colors.text }]}>
-          {new Intl.DateTimeFormat(i18n.language, {
-            day: '2-digit',
-            month: '2-digit',
-            timeZone: 'America/Montevideo',
-          }).format(new Date(k.scheduledStartAt))}
+          {formatDayMonth(k.scheduledStartAt, i18n.language)}
           {' · '}
           {formatTime(k.scheduledStartAt, i18n.language)}
         </Text>

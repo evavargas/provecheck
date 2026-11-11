@@ -18,6 +18,12 @@ import type {
 } from './catalogs';
 import type { TaskStatus } from './enums';
 import type {
+  ClientTaskDto,
+  ClientTaskList,
+  FileObjectionInput,
+  PresignAttachmentInput,
+  PresignedAttachmentDto,
+  RatingInput,
   ListObjectionsParams,
   ListRatingsParams,
   ObjectionDetailDto,
@@ -223,6 +229,24 @@ export function createApiClient(opts: ApiClientOptions) {
           `/tasks/${id}/resend-pdf`,
           recipientOverride ? { recipientOverride } : {},
         ),
+    },
+    myServices: {
+      list: () => request<ClientTaskList>('GET', '/tasks'),
+      get: (id: string) => request<ClientTaskDto>('GET', `/tasks/${id}`),
+      presignAttachment: (id: string, input: PresignAttachmentInput) =>
+        request<PresignedAttachmentDto>(
+          'POST',
+          `/tasks/${id}/objection/attachments/presign`,
+          input,
+        ),
+      confirmAttachment: (id: string, attachmentId: string) =>
+        request<void>('POST', `/tasks/${id}/objection/attachments/${attachmentId}/confirm`),
+      fileObjection: (id: string, input: FileObjectionInput) =>
+        request<ClientTaskDto>('POST', `/tasks/${id}/objection`, input),
+      rate: (id: string, assignmentId: string, input: RatingInput) =>
+        request<ClientTaskDto>('PUT', `/tasks/${id}/ratings/${assignmentId}`, input),
+      report: (id: string) => request<TaskReportDto>('GET', `/tasks/${id}/report`),
+      pdf: (id: string) => request<TaskDocumentDto>('GET', `/tasks/${id}/pdf`),
     },
     objections: {
       list: (params: ListObjectionsParams = {}) =>

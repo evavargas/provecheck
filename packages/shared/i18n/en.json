@@ -533,5 +533,66 @@
     "overdue": "Overdue task with no arrival: {{address}}",
     "seeAll": "See all",
     "collaborators": "Collaborators"
+  },
+  "client": {
+    "title": "My services",
+    "empty": "There are no services yet.",
+    "retry": "Retry",
+    "loadError": "We could not load your services.",
+    "canRate": "You can rate",
+    "deadline": "Objection window until {{date}}",
+    "closedOn": "The objection window closed on {{date}}.",
+    "detail": {
+      "service": "Service",
+      "address": "Address",
+      "recipient": "Received by",
+      "team": "Collaborators",
+      "arrived": "arrived {{time}}",
+      "delayed": "delayed",
+      "record": "Service record",
+      "photos": "Photos",
+      "pdf": "View PDF",
+      "pdfPending": "The PDF is still being generated.",
+      "objection": "Your objection",
+      "fileObjection": "File an objection",
+      "rate": "Rate collaborators",
+      "completedAt": "Completed",
+      "photoExpired": "Photo expired",
+      "noRecord": "This service has no record yet.",
+      "objectionStatus": {
+        "open": "Open",
+        "in_review": "In review",
+        "resolved": "Resolved"
+      },
+      "imageExpired": "Image expired",
+      "cancelled": "Service cancelled."
+    },
+    "objection": {
+      "title": "File an objection",
+      "text": "Tell us what happened",
+      "counter": "{{n}}/4000",
+      "images": "Images ({{n}}/{{max}})",
+      "add": "Add images",
+      "camera": "Camera",
+      "library": "Gallery",
+      "remove": "Remove image",
+      "note": "You can file one objection per service and it cannot be edited afterwards.",
+      "send": "Send objection",
+      "confirmTitle": "Send the objection?",
+      "confirmBody": "You will not be able to edit it afterwards.",
+      "confirm": "Send",
+      "back": "Back",
+      "waitUploads": "Wait for the images to finish uploading.",
+      "imageError": "An image could not be uploaded. Remove it and try again.",
+      "needsConnection": "You need a connection to send the objection."
+    },
+    "rate": {
+      "title": "Rate collaborators",
+      "note": "Only the company providing the service can see your rating.",
+      "comment": "Comment (optional)",
+      "save": "Save rating",
+      "saved": "Rating saved",
+      "star": "{{n}} of 5 stars"
+    }
   }
 }
