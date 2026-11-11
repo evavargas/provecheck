@@ -44,7 +44,6 @@ h1 {
 }
 
 input,
-select,
 button {
   font: inherit;
   color: inherit;
@@ -270,27 +269,62 @@ button.ghost {
   gap: 4px;
   align-items: center;
 }
-.lang {
-  position: relative;
+.menu-trigger {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  padding: 0 4px 0 10px;
-  height: 40px;
+  gap: 8px;
+  min-height: 40px;
+  padding: 0 12px;
   border-radius: 8px;
   color: var(--text-secondary);
 }
-.lang:hover {
+.menu-trigger:hover,
+.menu-trigger[data-state='open'] {
   background: color-mix(in srgb, var(--border) 50%, transparent);
 }
-.lang select {
-  appearance: none;
-  background: none;
-  border: 0;
+.menu-content {
+  z-index: 10;
+  min-width: 168px;
+  padding: 6px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-card);
+  box-shadow: 0 8px 24px rgb(0 0 0 / 0.12);
+}
+.menu-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
   min-height: 40px;
-  padding: 0 12px 0 0;
-  color: inherit;
+  padding: 0 10px;
+  border-radius: 8px;
   cursor: pointer;
+  outline: none;
+  color: var(--text);
+}
+.menu-item[data-highlighted] {
+  background: color-mix(in srgb, var(--primary) 12%, transparent);
+}
+.menu-check {
+  margin-left: auto;
+  display: inline-flex;
+  color: var(--primary);
+}
+.checkbox {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  color: var(--on-primary);
+}
+.checkbox[data-state='checked'] {
+  background: var(--primary);
+  border-color: var(--primary);
 }
 
 .shell {

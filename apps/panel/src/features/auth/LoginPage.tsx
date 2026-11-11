@@ -1,9 +1,10 @@
 import type { LoginResponse } from '@provecheck/shared';
+import { CircleAlert, Lock, User } from 'lucide-react';
 import { useState, type FormEvent } from 'react';
 import { useTranslation } from 'react-i18next';
 import { api } from '../../api/client';
 import { Field } from '../../components/Field';
-import { Icon, LogoMark } from '../../components/Icon';
+import { LogoMark } from '../../components/Icon';
 import { errorMessage } from './errors';
 
 export function LoginPage({ onDone }: { onDone: (r: LoginResponse) => void }) {
@@ -35,7 +36,7 @@ export function LoginPage({ onDone }: { onDone: (r: LoginResponse) => void }) {
       </div>
       <Field
         label={t('auth.identifier')}
-        icon="person"
+        icon={User}
         value={identifier}
         onChange={setIdentifier}
         placeholder={t('auth.identifierPlaceholder')}
@@ -47,7 +48,7 @@ export function LoginPage({ onDone }: { onDone: (r: LoginResponse) => void }) {
       />
       <Field
         label={t('auth.password')}
-        icon="lock"
+        icon={Lock}
         value={password}
         onChange={setPassword}
         placeholder={t('auth.passwordPlaceholder')}
@@ -58,7 +59,7 @@ export function LoginPage({ onDone }: { onDone: (r: LoginResponse) => void }) {
       <p role="alert" className="form-error">
         {error && (
           <>
-            <Icon name="error" size={16} /> {error}
+            <CircleAlert size={16} aria-hidden /> {error}
           </>
         )}
       </p>

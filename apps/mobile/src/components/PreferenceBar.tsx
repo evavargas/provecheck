@@ -1,12 +1,14 @@
-import { LOCALES, THEME_PREFERENCES, type Locale } from '@provecheck/shared';
+import { LOCALES, THEME_PREFERENCES, type Locale, type ThemePreference } from '@provecheck/shared';
+import { Globe, Monitor, Moon, Sun, type LucideIcon } from 'lucide-react-native';
 import { useTranslation } from 'react-i18next';
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import { useTheme } from '../theme/theme';
-import { Icon } from './Icon';
+import { OptionMenu } from './OptionMenu';
 
 const LANGUAGE_NAMES: Record<Locale, string> = { 'es-UY': 'Español', en: 'English' };
+const THEME_ICON: Record<ThemePreference, LucideIcon> = { light: Sun, dark: Moon, system: Monitor };
 
-/** Compact language and theme pills for logged-out screens (M-01 footer). Each tap cycles to the next option. */
+/** Compact language and theme menus for logged-out screens (M-01 footer). */
 export function PreferenceBar({
   locale,
   onLocale,
@@ -15,48 +17,29 @@ export function PreferenceBar({
   onLocale: (l: Locale) => void;
 }) {
   const { t } = useTranslation();
-  const { colors, preference, setPreference } = useTheme();
-  const nextLocale = LOCALES[(LOCALES.indexOf(locale) + 1) % LOCALES.length]!;
-  const nextTheme =
-    THEME_PREFERENCES[(THEME_PREFERENCES.indexOf(preference) + 1) % THEME_PREFERENCES.length]!;
-  const pill = { borderColor: colors.border, backgroundColor: colors.surface };
+  const { preference, setPreference } = useTheme();
   return (
     <View style={styles.row}>
-      <Pressable
-        accessibilityRole="button"
-        accessibilityLabel={`${t('prefs.language')}: ${LANGUAGE_NAMES[locale]}`}
-        onPress={() => onLocale(nextLocale)}
-        style={[styles.pill, pill]}
-      >
-        <Icon name="language" size={18} color={colors.textSecondary} />
-        <Text style={{ color: colors.text }}>{LANGUAGE_NAMES[locale]}</Text>
-      </Pressable>
-      <Pressable
-        accessibilityRole="button"
-        accessibilityLabel={`${t('prefs.theme')}: ${t(`prefs.${preference}`)}`}
-        onPress={() => setPreference(nextTheme)}
-        style={[styles.pill, pill]}
-      >
-        <Icon
-          name={preference === 'light' ? 'lightMode' : 'darkMode'}
-          size={18}
-          color={colors.textSecondary}
-        />
-        <Text style={{ color: colors.text }}>{t(`prefs.${preference}`)}</Text>
-      </Pressable>
+      <OptionMenu
+        label={t('prefs.language')}
+        value={locale}
+        onChange={onLocale}
+        options={LOCALES.map((v) => ({ value: v, label: LANGUAGE_NAMES[v], icon: Globe }))}
+      />
+      <OptionMenu
+        label={t('prefs.theme')}
+        value={preference}
+        onChange={setPreference}
+        options={THEME_PREFERENCES.map((v) => ({
+          value: v,
+          label: t(`prefs.${v}`),
+          icon: THEME_ICON[v],
+        }))}
+      />
     </View>
   );
 }
 
 const styles = StyleSheet.create({
   row: { flexDirection: 'row', justifyContent: 'center', gap: 10 },
-  pill: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-    minHeight: 44,
-    paddingHorizontal: 14,
-    borderRadius: 999,
-    borderWidth: 1,
-  },
 });

@@ -1,11 +1,12 @@
 import { ApiRequestError, type Locale } from '@provecheck/shared';
+import { CircleAlert, Info, Lock, Mail } from 'lucide-react-native';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { StyleSheet, Text, View } from 'react-native';
 import { useAuth } from '../../auth/AuthProvider';
 import { Button } from '../../components/Button';
 import { Field } from '../../components/Field';
-import { Icon, LogoMark } from '../../components/Icon';
+import { LogoMark } from '../../components/Icon';
 import { PreferenceBar } from '../../components/PreferenceBar';
 import { Screen } from '../../components/Screen';
 import { setLocale } from '../../i18n';
@@ -54,7 +55,7 @@ export function LoginScreen({ notice }: { notice?: 'notForApp' | undefined }) {
         </View>
         <Field
           label={t('auth.identifier')}
-          icon="mail"
+          icon={Mail}
           value={identifier}
           onChange={setIdentifier}
           placeholder={t('auth.identifierPlaceholder')}
@@ -65,7 +66,7 @@ export function LoginScreen({ notice }: { notice?: 'notForApp' | undefined }) {
         />
         <Field
           label={t('auth.password')}
-          icon="lock"
+          icon={Lock}
           value={password}
           onChange={setPassword}
           placeholder={t('auth.passwordPlaceholder')}
@@ -75,7 +76,7 @@ export function LoginScreen({ notice }: { notice?: 'notForApp' | undefined }) {
         />
         {error ? (
           <View style={styles.errorRow} accessibilityLiveRegion="polite">
-            <Icon name="error" size={16} color={colors.error} />
+            <CircleAlert size={16} color={colors.error} />
             <Text style={{ color: colors.error, flex: 1 }}>{error}</Text>
           </View>
         ) : null}
@@ -85,7 +86,7 @@ export function LoginScreen({ notice }: { notice?: 'notForApp' | undefined }) {
           disabled={busy || !identifier || !password}
         />
         <View style={[styles.hint, { backgroundColor: colors.background }]}>
-          <Icon name="info" size={18} color={colors.primary} />
+          <Info size={18} color={colors.primary} />
           <Text style={{ color: colors.textSecondary, flex: 1, fontSize: 13 }}>
             {t('auth.forgotHint')}
           </Text>

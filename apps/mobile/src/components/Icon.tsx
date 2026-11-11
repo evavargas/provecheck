@@ -1,19 +1,5 @@
-import { ICONS, LOGO_MARK, type IconName } from '@provecheck/shared';
+import { LOGO_MARK } from '@provecheck/shared';
 import Svg, { Path, Rect } from 'react-native-svg';
-
-export function Icon({ name, size = 20, color }: { name: IconName; size?: number; color: string }) {
-  return (
-    <Svg
-      width={size}
-      height={size}
-      viewBox="0 0 24 24"
-      accessibilityElementsHidden
-      importantForAccessibility="no"
-    >
-      <Path d={ICONS[name]} fill={color} />
-    </Svg>
-  );
-}
 
 export function LogoMark({ size = 56 }: { size?: number }) {
   return (

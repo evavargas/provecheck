@@ -1,19 +1,4 @@
-import { ICONS, LOGO_MARK, type IconName } from '@provecheck/shared';
-
-export function Icon({ name, size = 20 }: { name: IconName; size?: number }) {
-  return (
-    <svg
-      width={size}
-      height={size}
-      viewBox="0 0 24 24"
-      fill="currentColor"
-      aria-hidden="true"
-      focusable="false"
-    >
-      <path d={ICONS[name]} />
-    </svg>
-  );
-}
+import { LOGO_MARK } from '@provecheck/shared';
 
 export function LogoMark({ size = 56 }: { size?: number }) {
   return (

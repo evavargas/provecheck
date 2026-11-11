@@ -1,20 +1,19 @@
-import type { IconName } from '@provecheck/shared';
+import { CircleAlert, Eye, EyeOff, type LucideIcon } from 'lucide-react-native';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Pressable, StyleSheet, Text, TextInput, View, type TextInputProps } from 'react-native';
 import { useTheme } from '../theme/theme';
-import { Icon } from './Icon';
 
 interface Props extends Omit<TextInputProps, 'onChangeText' | 'onChange' | 'value'> {
   label: string;
-  icon: IconName;
+  icon: LucideIcon;
   value: string;
   onChange: (v: string) => void;
   error?: string | undefined;
   secret?: boolean;
 }
 
-export function Field({ label, icon, value, onChange, error, secret, ...rest }: Props) {
+export function Field({ label, icon: LeadIcon, value, onChange, error, secret, ...rest }: Props) {
   const { t } = useTranslation();
   const { colors } = useTheme();
   const [visible, setVisible] = useState(false);
@@ -27,7 +26,7 @@ export function Field({ label, icon, value, onChange, error, secret, ...rest }: 
           { backgroundColor: colors.surface, borderColor: error ? colors.error : colors.border },
         ]}
       >
-        <Icon name={icon} color={colors.textSecondary} />
+        <LeadIcon size={20} color={colors.textSecondary} />
         <TextInput
           {...rest}
           value={value}
@@ -45,13 +44,17 @@ export function Field({ label, icon, value, onChange, error, secret, ...rest }: 
             hitSlop={8}
             style={styles.toggle}
           >
-            <Icon name={visible ? 'visibilityOff' : 'visibility'} color={colors.textSecondary} />
+            {visible ? (
+              <EyeOff size={20} color={colors.textSecondary} />
+            ) : (
+              <Eye size={20} color={colors.textSecondary} />
+            )}
           </Pressable>
         )}
       </View>
       {error ? (
         <View style={styles.errorRow} accessibilityLiveRegion="polite">
-          <Icon name="error" size={16} color={colors.error} />
+          <CircleAlert size={16} color={colors.error} />
           <Text style={[styles.error, { color: colors.error }]}>{error}</Text>
         </View>
       ) : null}

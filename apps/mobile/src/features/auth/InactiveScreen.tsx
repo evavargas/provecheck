@@ -1,8 +1,8 @@
+import { UserX } from 'lucide-react-native';
 import { useTranslation } from 'react-i18next';
 import { StyleSheet, Text, View } from 'react-native';
 import { useAuth } from '../../auth/AuthProvider';
 import { Button } from '../../components/Button';
-import { Icon } from '../../components/Icon';
 import { Screen } from '../../components/Screen';
 import { useTheme } from '../../theme/theme';
 
@@ -21,7 +21,7 @@ export function InactiveScreen() {
     >
       <View style={styles.center}>
         <View style={[styles.badge, { backgroundColor: colors.border }]}>
-          <Icon name="block" size={32} color={colors.textSecondary} />
+          <UserX size={32} color={colors.textSecondary} />
         </View>
         <Text accessibilityRole="header" style={[styles.title, { color: colors.text }]}>
           {t('auth.inactive.title')}

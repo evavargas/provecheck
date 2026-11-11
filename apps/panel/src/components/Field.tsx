@@ -1,28 +1,36 @@
-import { type IconName } from '@provecheck/shared';
+import { CircleAlert, Eye, EyeOff, type LucideIcon } from 'lucide-react';
 import { useId, useState, type InputHTMLAttributes } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Icon } from './Icon';
 
 interface FieldProps extends Omit<InputHTMLAttributes<HTMLInputElement>, 'onChange' | 'id'> {
   label: string;
-  icon: IconName;
+  icon: LucideIcon;
   value: string;
   onChange: (v: string) => void;
   error?: string | undefined;
-  /** Adds the show/hide toggle (password fields). */
+  /** Adds the show/hide eye (password fields). */
   secret?: boolean;
 }
 
-export function Field({ label, icon, value, onChange, error, secret, ...rest }: FieldProps) {
+export function Field({
+  label,
+  icon: LeadIcon,
+  value,
+  onChange,
+  error,
+  secret,
+  ...rest
+}: FieldProps) {
   const { t } = useTranslation();
   const [visible, setVisible] = useState(false);
   const id = useId();
+  const Eyes = visible ? EyeOff : Eye;
   return (
     <div className="field">
       <label htmlFor={id}>{label}</label>
       <div className={`input-wrap${error ? ' invalid' : ''}`}>
         <span className="lead">
-          <Icon name={icon} />
+          <LeadIcon size={20} aria-hidden />
         </span>
         <input
           {...rest}
@@ -41,13 +49,13 @@ export function Field({ label, icon, value, onChange, error, secret, ...rest }: 
             aria-pressed={visible}
             onClick={() => setVisible((v) => !v)}
           >
-            <Icon name={visible ? 'visibilityOff' : 'visibility'} />
+            <Eyes size={20} aria-hidden />
           </button>
         )}
       </div>
       {error && (
         <p id={`${id}-err`} className="field-error">
-          <Icon name="error" size={16} /> {error}
+          <CircleAlert size={16} aria-hidden /> {error}
         </p>
       )}
     </div>

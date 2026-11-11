@@ -1,7 +1,9 @@
 import { ApiRequestError, MIN_PASSWORD_LENGTH, type MeDto } from '@provecheck/shared';
-import { useId, useState, type FormEvent } from 'react';
+import { Lock, Mail } from 'lucide-react';
+import { useState, type FormEvent } from 'react';
 import { useTranslation } from 'react-i18next';
 import { api } from '../../api/client';
+import { CheckboxField } from '../../components/CheckboxField';
 import { Field } from '../../components/Field';
 import { LogoMark } from '../../components/Icon';
 import { StrengthMeter } from '../../components/StrengthMeter';
@@ -9,7 +11,6 @@ import { errorMessage } from './errors';
 
 export function FirstLoginPage({ user, onDone }: { user: MeDto; onDone: (u: MeDto) => void }) {
   const { t } = useTranslation();
-  const confirmId = useId();
   const [email, setEmail] = useState(user.email);
   const [password, setPassword] = useState('');
   const [repeat, setRepeat] = useState('');
@@ -52,7 +53,7 @@ export function FirstLoginPage({ user, onDone }: { user: MeDto; onDone: (u: MeDt
       </div>
       <Field
         label={t('auth.firstLogin.email')}
-        icon="mail"
+        icon={Mail}
         type="email"
         value={email}
         onChange={setEmail}
@@ -63,7 +64,7 @@ export function FirstLoginPage({ user, onDone }: { user: MeDto; onDone: (u: MeDt
       <div>
         <Field
           label={t('auth.firstLogin.newPassword')}
-          icon="lock"
+          icon={Lock}
           value={password}
           onChange={setPassword}
           autoComplete="new-password"
@@ -81,7 +82,7 @@ export function FirstLoginPage({ user, onDone }: { user: MeDto; onDone: (u: MeDt
       </div>
       <Field
         label={t('auth.firstLogin.repeatPassword')}
-        icon="lock"
+        icon={Lock}
         value={repeat}
         onChange={setRepeat}
         autoComplete="new-password"
@@ -89,15 +90,11 @@ export function FirstLoginPage({ user, onDone }: { user: MeDto; onDone: (u: MeDt
         required
         error={mismatch ? t('auth.firstLogin.mismatch') : undefined}
       />
-      <div className="check">
-        <input
-          id={confirmId}
-          type="checkbox"
-          checked={confirmed}
-          onChange={(e) => setConfirmed(e.target.checked)}
-        />
-        <label htmlFor={confirmId}>{t('auth.firstLogin.confirmEmail')}</label>
-      </div>
+      <CheckboxField
+        label={t('auth.firstLogin.confirmEmail')}
+        checked={confirmed}
+        onChange={setConfirmed}
+      />
       <p role="alert" className="form-error">
         {apiError?.field === 'form' ? apiError.message : ''}
       </p>

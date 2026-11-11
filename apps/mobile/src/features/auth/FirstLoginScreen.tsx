@@ -1,11 +1,12 @@
 import { ApiRequestError, MIN_PASSWORD_LENGTH, type Locale } from '@provecheck/shared';
+import { CircleAlert, Lock, Mail } from 'lucide-react-native';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { useAuth } from '../../auth/AuthProvider';
 import { Button } from '../../components/Button';
 import { Field } from '../../components/Field';
-import { Icon, LogoMark } from '../../components/Icon';
+import { LogoMark } from '../../components/Icon';
 import { PreferenceBar } from '../../components/PreferenceBar';
 import { Screen } from '../../components/Screen';
 import { StrengthMeter } from '../../components/StrengthMeter';
@@ -71,7 +72,7 @@ export function FirstLoginScreen({ email: initialEmail }: { email: string }) {
       <View style={[styles.card, { backgroundColor: colors.surface, borderColor: colors.border }]}>
         <Field
           label={t('auth.firstLogin.email')}
-          icon="mail"
+          icon={Mail}
           value={email}
           onChange={setEmail}
           keyboardType="email-address"
@@ -83,7 +84,7 @@ export function FirstLoginScreen({ email: initialEmail }: { email: string }) {
         <View>
           <Field
             label={t('auth.firstLogin.newPassword')}
-            icon="lock"
+            icon={Lock}
             value={password}
             onChange={setPassword}
             autoComplete="new-password"
@@ -101,7 +102,7 @@ export function FirstLoginScreen({ email: initialEmail }: { email: string }) {
         </View>
         <Field
           label={t('auth.firstLogin.repeatPassword')}
-          icon="lock"
+          icon={Lock}
           value={repeat}
           onChange={setRepeat}
           autoComplete="new-password"
@@ -132,7 +133,7 @@ export function FirstLoginScreen({ email: initialEmail }: { email: string }) {
         </Pressable>
         {apiError?.field === 'form' ? (
           <View style={styles.errorRow} accessibilityLiveRegion="polite">
-            <Icon name="error" size={16} color={colors.error} />
+            <CircleAlert size={16} color={colors.error} />
             <Text style={{ color: colors.error, flex: 1 }}>{apiError.message}</Text>
           </View>
         ) : null}

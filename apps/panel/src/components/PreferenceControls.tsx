@@ -1,21 +1,12 @@
-import {
-  LOCALES,
-  THEME_PREFERENCES,
-  type IconName,
-  type Locale,
-  type ThemePreference,
-} from '@provecheck/shared';
+import { LOCALES, THEME_PREFERENCES, type Locale, type ThemePreference } from '@provecheck/shared';
+import { Globe, Monitor, Moon, Sun, type LucideIcon } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
-import { Icon } from './Icon';
+import { OptionMenu } from './OptionMenu';
 
 const LANGUAGE_NAMES: Record<Locale, string> = { 'es-UY': 'Español', en: 'English' };
-const THEME_ICON: Record<ThemePreference, IconName> = {
-  light: 'lightMode',
-  dark: 'darkMode',
-  system: 'darkMode',
-};
+const THEME_ICON: Record<ThemePreference, LucideIcon> = { light: Sun, dark: Moon, system: Monitor };
 
-/** Compact controls (spec 16): language picker and a theme button that cycles Claro / Oscuro / Sistema. */
+/** Compact theme and language menus (spec 16): for logged-out screens and the user menu. */
 export function PreferenceControls(props: {
   theme: ThemePreference;
   locale: Locale;
@@ -23,30 +14,24 @@ export function PreferenceControls(props: {
   onLocale: (l: Locale) => void;
 }) {
   const { t } = useTranslation();
-  const next =
-    THEME_PREFERENCES[(THEME_PREFERENCES.indexOf(props.theme) + 1) % THEME_PREFERENCES.length]!;
   return (
     <div className="prefs">
-      <label className="lang">
-        <Icon name="language" size={18} />
-        <span className="sr-only">{t('prefs.language')}</span>
-        <select value={props.locale} onChange={(e) => props.onLocale(e.target.value as Locale)}>
-          {LOCALES.map((v) => (
-            <option key={v} value={v}>
-              {LANGUAGE_NAMES[v]}
-            </option>
-          ))}
-        </select>
-      </label>
-      <button
-        type="button"
-        className="icon-button"
-        title={`${t('prefs.theme')}: ${t(`prefs.${props.theme}`)}`}
-        aria-label={`${t('prefs.theme')}: ${t(`prefs.${props.theme}`)}. ${t(`prefs.${next}`)}`}
-        onClick={() => props.onTheme(next)}
-      >
-        <Icon name={THEME_ICON[props.theme]} />
-      </button>
+      <OptionMenu
+        label={t('prefs.theme')}
+        value={props.theme}
+        onChange={props.onTheme}
+        options={THEME_PREFERENCES.map((v) => ({
+          value: v,
+          label: t(`prefs.${v}`),
+          icon: THEME_ICON[v],
+        }))}
+      />
+      <OptionMenu
+        label={t('prefs.language')}
+        value={props.locale}
+        onChange={props.onLocale}
+        options={LOCALES.map((v) => ({ value: v, label: LANGUAGE_NAMES[v], icon: Globe }))}
+      />
     </div>
   );
 }
