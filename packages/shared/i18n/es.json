@@ -4,7 +4,8 @@
   },
   "common": {
     "loading": "Cargando…",
-    "retry": "Reintentar"
+    "retry": "Reintentar",
+    "logout": "Cerrar sesión"
   },
   "errors": {
     "VALIDATION_ERROR": "Los datos ingresados no son válidos.",
@@ -17,7 +18,8 @@
     "ACCOUNT_INACTIVE": "Tu cuenta está desactivada.",
     "PASSWORD_CHANGE_REQUIRED": "Tenés que cambiar tu contraseña para continuar.",
     "RATE_LIMITED": "Demasiados intentos. Esperá un momento y probá de nuevo.",
-    "INTERNAL": "Algo salió mal. Probá de nuevo."
+    "INTERNAL": "Algo salió mal. Probá de nuevo.",
+    "NETWORK": "Necesitás conexión para ingresar."
   },
   "auth": {
     "title": "Iniciar sesión",
@@ -36,7 +38,20 @@
       "confirmEmail": "Confirmo que este mail es mío",
       "submit": "Guardar y continuar",
       "mismatch": "Las contraseñas no coinciden.",
-      "tooShort": "Usá al menos 10 caracteres."
+      "tooShort": "Usá al menos 10 caracteres.",
+      "sameAsTemporary": "La nueva contraseña tiene que ser distinta de la temporal."
+    }
+  },
+  "prefs": {
+    "theme": "Tema",
+    "light": "Claro",
+    "dark": "Oscuro",
+    "system": "Sistema",
+    "language": "Idioma"
+  },
+  "panel": {
+    "home": {
+      "title": "Inicio"
     }
   }
 }

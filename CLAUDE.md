@@ -7,6 +7,8 @@ Field-service management: admin panel (web), collaborator/client app (Expo, mobi
 - Install: `pnpm install`
 - Local backend: `supabase start` (Postgres, Auth, Storage in Docker), then copy `.env.example` to `.env`
 - Dev: `pnpm --filter api dev`, `pnpm --filter panel dev`, `pnpm --filter mobile start`
+- First admin: `pnpm --filter api create-admin -- --org "Name" --name "Name" --username u --email e@x.com --phone 099...` (prints a temporary password once)
+- DB tests: `pnpm db:test` (RLS, needs `supabase start`); API integration tests: `pnpm --filter api test:integration`
 - Check: `pnpm -r typecheck && pnpm -r test && pnpm lint`
 
 ## Rules

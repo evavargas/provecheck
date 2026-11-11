@@ -4,7 +4,8 @@
   },
   "common": {
     "loading": "Loading…",
-    "retry": "Retry"
+    "retry": "Retry",
+    "logout": "Sign out"
   },
   "errors": {
     "VALIDATION_ERROR": "The data you entered is not valid.",
@@ -17,7 +18,8 @@
     "ACCOUNT_INACTIVE": "Your account is deactivated.",
     "PASSWORD_CHANGE_REQUIRED": "You must change your password to continue.",
     "RATE_LIMITED": "Too many attempts. Wait a moment and try again.",
-    "INTERNAL": "Something went wrong. Please try again."
+    "INTERNAL": "Something went wrong. Please try again.",
+    "NETWORK": "You need a connection to sign in."
   },
   "auth": {
     "title": "Sign in",
@@ -36,7 +38,20 @@
       "confirmEmail": "I confirm this email is mine",
       "submit": "Save and continue",
       "mismatch": "Passwords do not match.",
-      "tooShort": "Use at least 10 characters."
+      "tooShort": "Use at least 10 characters.",
+      "sameAsTemporary": "The new password must differ from the temporary one."
+    }
+  },
+  "prefs": {
+    "theme": "Theme",
+    "light": "Light",
+    "dark": "Dark",
+    "system": "System",
+    "language": "Language"
+  },
+  "panel": {
+    "home": {
+      "title": "Home"
     }
   }
 }
