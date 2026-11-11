@@ -30,10 +30,10 @@ interface NavItem {
 const NAV: NavItem[] = [
   { key: 'home', icon: House, to: '/' },
   { key: 'tasks', icon: ClipboardList, to: '/tasks' },
-  { key: 'objections', icon: Gavel },
+  { key: 'objections', icon: Gavel, to: '/objections' },
   { key: 'companies', icon: Building2, to: '/companies' },
   { key: 'users', icon: Users, to: '/users' },
-  { key: 'ratings', icon: Star },
+  { key: 'ratings', icon: Star, to: '/ratings' },
   { key: 'serviceTypes', icon: Wrench, to: '/service-types' },
   { key: 'audit', icon: History },
   { key: 'settings', icon: Settings },

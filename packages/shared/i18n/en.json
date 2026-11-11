@@ -463,5 +463,75 @@
       "photoError": "The photo could not be uploaded. Remove it and try again.",
       "waitUploads": "Wait for the photos to finish uploading."
     }
+  },
+  "objections": {
+    "title": "Objections",
+    "subtitle": "Client complaints about completed services",
+    "filterStatus": "Status",
+    "allStatuses": "All statuses",
+    "empty": "There are no objections.",
+    "status": {
+      "open": "Open",
+      "in_review": "In review",
+      "resolved": "Resolved"
+    },
+    "col": {
+      "task": "Service",
+      "recipient": "Client",
+      "filed": "Filed",
+      "age": "Age",
+      "contact": "Contact",
+      "status": "Status",
+      "actions": "Actions"
+    },
+    "ageDays": "{{count}} days",
+    "today": "Today",
+    "manage": "Manage",
+    "call": "Call",
+    "mail": "Email",
+    "whatsapp": "WhatsApp",
+    "detail": {
+      "title": "Objection",
+      "author": "Filed by",
+      "text": "Objection text",
+      "images": "Attached images",
+      "notes": "Internal notes",
+      "notesHint": "Only visible to administrators.",
+      "statusLabel": "Management status",
+      "save": "Save changes",
+      "saved": "Changes saved.",
+      "task": "Service",
+      "taskStatus": "Task status",
+      "imageExpired": "Image expired",
+      "image": "Image",
+      "viewTask": "View task"
+    }
+  },
+  "ratings": {
+    "title": "Ratings",
+    "subtitle": "What clients think of each collaborator",
+    "summary": "Summary by collaborator",
+    "comments": "Comments",
+    "filterCollaborator": "Collaborator",
+    "all": "All",
+    "empty": "There are no ratings yet.",
+    "count": "{{count}} ratings",
+    "average": "Average",
+    "stars": "{{n}} stars",
+    "noComment": "No comment",
+    "on": "at"
+  },
+  "panelHome": {
+    "objections": "Open objections",
+    "noObjections": "There are no open objections.",
+    "today": "Today's tasks",
+    "noToday": "No tasks for today.",
+    "onSite": "On site now",
+    "noOnSite": "Nobody is on site right now.",
+    "alerts": "Alerts",
+    "noAlerts": "No alerts.",
+    "overdue": "Overdue task with no arrival: {{address}}",
+    "seeAll": "See all",
+    "collaborators": "Collaborators"
   }
 }

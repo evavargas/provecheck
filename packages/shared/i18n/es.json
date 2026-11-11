@@ -463,5 +463,75 @@
       "photoError": "No se pudo subir la foto. Quitala e intentá de nuevo.",
       "waitUploads": "Esperá a que terminen de subirse las fotos."
     }
+  },
+  "objections": {
+    "title": "Descargos",
+    "subtitle": "Reclamos de los clientes sobre servicios finalizados",
+    "filterStatus": "Estado",
+    "allStatuses": "Todos los estados",
+    "empty": "No hay descargos.",
+    "status": {
+      "open": "Abierto",
+      "in_review": "En gestión",
+      "resolved": "Resuelto"
+    },
+    "col": {
+      "task": "Servicio",
+      "recipient": "Cliente",
+      "filed": "Presentado",
+      "age": "Antigüedad",
+      "contact": "Contacto",
+      "status": "Estado",
+      "actions": "Acciones"
+    },
+    "ageDays": "{{count}} días",
+    "today": "Hoy",
+    "manage": "Gestionar",
+    "call": "Llamar",
+    "mail": "Escribir",
+    "whatsapp": "WhatsApp",
+    "detail": {
+      "title": "Descargo",
+      "author": "Presentado por",
+      "text": "Texto del descargo",
+      "images": "Imágenes adjuntas",
+      "notes": "Notas internas",
+      "notesHint": "Solo las ve la administración.",
+      "statusLabel": "Estado de gestión",
+      "save": "Guardar cambios",
+      "saved": "Cambios guardados.",
+      "task": "Servicio",
+      "taskStatus": "Estado de la tarea",
+      "imageExpired": "Imagen expirada",
+      "image": "Imagen",
+      "viewTask": "Ver tarea"
+    }
+  },
+  "ratings": {
+    "title": "Calificaciones",
+    "subtitle": "Lo que opinan los clientes de cada colaborador",
+    "summary": "Resumen por colaborador",
+    "comments": "Comentarios",
+    "filterCollaborator": "Colaborador",
+    "all": "Todos",
+    "empty": "Todavía no hay calificaciones.",
+    "count": "{{count}} calificaciones",
+    "average": "Promedio",
+    "stars": "{{n}} estrellas",
+    "noComment": "Sin comentario",
+    "on": "en"
+  },
+  "panelHome": {
+    "objections": "Descargos abiertos",
+    "noObjections": "No hay descargos abiertos.",
+    "today": "Tareas de hoy",
+    "noToday": "No hay tareas para hoy.",
+    "onSite": "En sitio ahora",
+    "noOnSite": "Nadie está en sitio ahora.",
+    "alerts": "Alertas",
+    "noAlerts": "Sin alertas.",
+    "overdue": "Tarea vencida sin llegada: {{address}}",
+    "seeAll": "Ver todos",
+    "collaborators": "Colaboradores"
   }
 }

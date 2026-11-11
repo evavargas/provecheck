@@ -18,6 +18,15 @@ import type {
 } from './catalogs';
 import type { TaskStatus } from './enums';
 import type {
+  ListObjectionsParams,
+  ListRatingsParams,
+  ObjectionDetailDto,
+  ObjectionRowDto,
+  RatingRowDto,
+  RatingSummaryDto,
+  UpdateObjectionInput,
+} from './feedback';
+import type {
   OutboxDto,
   TaskDocumentDto,
   TaskReportDto,
@@ -214,6 +223,18 @@ export function createApiClient(opts: ApiClientOptions) {
           `/tasks/${id}/resend-pdf`,
           recipientOverride ? { recipientOverride } : {},
         ),
+    },
+    objections: {
+      list: (params: ListObjectionsParams = {}) =>
+        request<{ items: ObjectionRowDto[] }>('GET', `/objections${query(params)}`),
+      get: (id: string) => request<ObjectionDetailDto>('GET', `/objections/${id}`),
+      update: (id: string, input: UpdateObjectionInput) =>
+        request<ObjectionDetailDto>('PATCH', `/objections/${id}`, input),
+    },
+    ratings: {
+      summary: () => request<{ items: RatingSummaryDto[] }>('GET', '/ratings/summary'),
+      list: (params: ListRatingsParams = {}) =>
+        request<{ items: RatingRowDto[] }>('GET', `/ratings${query(params)}`),
     },
     serviceTypes: {
       list: (active?: boolean) =>
