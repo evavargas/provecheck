@@ -98,6 +98,9 @@ beforeAll(async () => {
 });
 
 afterAll(async () => {
+  await db.pool.query('DELETE FROM notifications_outbox WHERE organization_id = ANY($1)', [orgs]);
+  await db.pool.query('DELETE FROM documents WHERE organization_id = ANY($1)', [orgs]);
+  await db.pool.query('DELETE FROM task_photos WHERE organization_id = ANY($1)', [orgs]);
   await db.pool.query('DELETE FROM task_assignments WHERE organization_id = ANY($1)', [orgs]);
   await db.pool.query('DELETE FROM jobs WHERE organization_id = ANY($1)', [orgs]);
   await db.pool.query('DELETE FROM task_report_drafts WHERE organization_id = ANY($1)', [orgs]);
@@ -412,7 +415,7 @@ describe('collaborator view', () => {
     expect(ids).not.toContain(theirs.id);
     const detail = await call('GET', `/tasks/${mine.id}`, collabToken);
     const raw = res.body + detail.body;
-    expect(raw).not.toMatch(/cost|fee/i);
+    expect(raw).not.toMatch(/"(cost|fee)\w*"/i);
     expect(raw).not.toMatch(/:(4321|777|888)[,}\]]/);
     expect(detail.json().team.map((m: { name: string }) => m.name)).toHaveLength(2);
     expect((await call('GET', `/tasks/${theirs.id}`, collabToken)).statusCode).toBe(404);

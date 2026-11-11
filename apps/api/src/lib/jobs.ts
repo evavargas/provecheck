@@ -39,12 +39,14 @@ export function createWorker(deps: {
   let running = false;
 
   /** Claims one due job (or a stuck one whose lock expired) and returns it, or null. */
-  async function claim(): Promise<Job | null> {
+  async function claim(organizationId?: string): Promise<Job | null> {
     return db.tx(async (c) => {
       const { rows } = await c.query(
         `SELECT id, organization_id, type, payload, attempts, max_attempts FROM jobs
-         WHERE (status = 'pending' AND run_at <= now()) OR (status = 'running' AND locked_until < now())
+         WHERE ((status = 'pending' AND run_at <= now()) OR (status = 'running' AND locked_until < now()))
+           AND ($1::uuid IS NULL OR organization_id = $1)
          ORDER BY run_at LIMIT 1 FOR UPDATE SKIP LOCKED`,
+        [organizationId ?? null],
       );
       const r = rows[0];
       if (!r) return null;
@@ -80,10 +82,10 @@ export function createWorker(deps: {
     );
   }
 
-  /** Runs due jobs one by one until none is left; returns how many ran. */
-  async function runOnce(): Promise<number> {
+  /** Runs due jobs one by one until none is left; returns how many ran. `organizationId` narrows it (tests). */
+  async function runOnce(organizationId?: string): Promise<number> {
     let n = 0;
-    for (let job = await claim(); job; job = await claim()) {
+    for (let job = await claim(organizationId); job; job = await claim(organizationId)) {
       n++;
       try {
         const handler = handlers[job.type];

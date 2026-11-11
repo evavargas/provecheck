@@ -262,7 +262,7 @@ describe('pdf and mail queue', () => {
     expect((await call('GET', `/tasks/${taskId}/pdf`, adminToken)).json().code).toBe('PDF_PENDING');
 
     sent.length = 0;
-    await app.worker.runOnce();
+    await app.worker.runOnce(orgs[0]);
     // generate-pdf, which queues send-pdf-mail, which runs in the same pass
     const pdf = (await call('GET', `/tasks/${taskId}/pdf`, adminToken)).json();
     const file = await fetch(pdf.url);
@@ -288,7 +288,7 @@ describe('pdf and mail queue', () => {
     expect((await call('GET', `/tasks/${taskId}/outbox`, collabToken)).statusCode).toBe(403);
 
     // Running again changes nothing: no second PDF, no second mail.
-    await app.worker.runOnce();
+    await app.worker.runOnce(orgs[0]);
     expect(
       (await db.pool.query('SELECT 1 FROM documents WHERE task_id = $1', [taskId])).rowCount,
     ).toBe(1);
@@ -298,7 +298,7 @@ describe('pdf and mail queue', () => {
     const taskId = await onSiteTask();
     await finalize(taskId);
     sent.length = 0;
-    await app.worker.runOnce();
+    await app.worker.runOnce(orgs[0]);
     expect(sent).toHaveLength(0);
     const row = await db.pool.query(`SELECT status FROM notifications_outbox WHERE task_id = $1`, [
       taskId,
@@ -318,7 +318,7 @@ describe('pdf and mail queue', () => {
         })
       ).statusCode,
     ).toBe(204);
-    await app.worker.runOnce();
+    await app.worker.runOnce(orgs[0]);
     expect(sent.map((m) => m.to)).toEqual(['other@client.test']);
     const rows = await db.pool.query(
       `SELECT status FROM notifications_outbox WHERE task_id = $1 ORDER BY created_at`,
@@ -333,7 +333,7 @@ describe('pdf and mail queue', () => {
     failMail = true;
     try {
       for (let i = 0; i < 6; i++) {
-        await app.worker.runOnce();
+        await app.worker.runOnce(orgs[0]);
         await db.pool.query(
           `UPDATE jobs SET run_at = now() WHERE status = 'pending' AND organization_id = $1`,
           [orgs[0]],

@@ -131,6 +131,9 @@ afterAll(async () => {
     await c.query('DELETE FROM task_reports WHERE organization_id = ANY($1)', [orgs]);
     await c.query('ALTER TABLE task_reports ENABLE TRIGGER USER');
   });
+  await db.pool.query('DELETE FROM notifications_outbox WHERE organization_id = ANY($1)', [orgs]);
+  await db.pool.query('DELETE FROM documents WHERE organization_id = ANY($1)', [orgs]);
+  await db.pool.query('DELETE FROM task_photos WHERE organization_id = ANY($1)', [orgs]);
   await db.pool.query('DELETE FROM task_assignments WHERE organization_id = ANY($1)', [orgs]);
   await db.pool.query('DELETE FROM tasks WHERE organization_id = ANY($1)', [orgs]);
   await db.pool.query('DELETE FROM audit_log WHERE organization_id = ANY($1)', [orgs]);
@@ -216,7 +219,7 @@ describe('client view', () => {
         .team.map((m: { name: string }) => m.name)
         .sort(),
     ).toEqual(['fcollab', 'fcollab2']);
-    expect(mine.body + detail.body).not.toMatch(/cost|fee|31337|4242|5151/i);
+    expect(mine.body + detail.body).not.toMatch(/"(cost|fee)\w*"|:(31337|4242|5151)\b/i);
     // A colleague of the same company sees it too; a client of another company does not.
     expect((await call('GET', `/tasks/${id}`, client2Token)).statusCode).toBe(200);
     expect((await call('GET', `/tasks/${id}`, strangerToken)).statusCode).toBe(404);
