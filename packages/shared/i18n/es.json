@@ -373,5 +373,58 @@
       "confirm": "Cancelar tarea",
       "back": "Volver"
     }
+  },
+  "collab": {
+    "title": "Mis tareas",
+    "today": "Hoy",
+    "upcoming": "Próximas",
+    "empty": "No tenés tareas pendientes.",
+    "refresh": "Actualizar",
+    "loadError": "No pudimos cargar tus tareas.",
+    "retry": "Reintentar",
+    "status": {
+      "scheduled": "Programada",
+      "on_site": "En sitio",
+      "completed": "Finalizada"
+    },
+    "detail": {
+      "howToGet": "Cómo llegar",
+      "call": "Llamar",
+      "instructions": "Indicaciones",
+      "description": "Descripción",
+      "recipient": "Recibe",
+      "team": "Equipo",
+      "arrivedAt": "Llegaste a las {{time}}",
+      "arrive": "Registrar llegada",
+      "finish": "Finalizar tarea",
+      "done": "Esta tarea ya fue finalizada.",
+      "delayQuestion": "¿Hubo demora en atenderte?",
+      "yes": "Sí",
+      "no": "No",
+      "confirmArrival": "Confirmar llegada",
+      "cancel": "Cancelar",
+      "service": "Servicio",
+      "teamArrived": "llegó",
+      "teamPending": "sin llegada"
+    },
+    "finish": {
+      "title": "Registro del servicio",
+      "hint": "Contá qué hiciste. Usá **negrita** y líneas que empiezan con \"- \" para listas.",
+      "placeholder": "Describí el servicio realizado…",
+      "bold": "Negrita",
+      "bullet": "Lista",
+      "review": "Revisar y finalizar",
+      "reviewTitle": "Revisá antes de finalizar",
+      "warning": "Después de finalizar no vas a poder editar el registro.",
+      "confirm": "Finalizar",
+      "back": "Seguir editando",
+      "arrival": "Llegada",
+      "delayed": "Con demora",
+      "notDelayed": "Sin demora",
+      "saved": "Borrador guardado",
+      "sending": "Enviando…",
+      "alreadyDone": "Otro colaborador ya finalizó esta tarea.",
+      "empty": "Escribí el registro para continuar."
+    }
   }
 }

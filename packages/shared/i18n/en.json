@@ -373,5 +373,58 @@
       "confirm": "Cancel task",
       "back": "Back"
     }
+  },
+  "collab": {
+    "title": "My tasks",
+    "today": "Today",
+    "upcoming": "Upcoming",
+    "empty": "You have no pending tasks.",
+    "refresh": "Refresh",
+    "loadError": "We could not load your tasks.",
+    "retry": "Retry",
+    "status": {
+      "scheduled": "Scheduled",
+      "on_site": "On site",
+      "completed": "Completed"
+    },
+    "detail": {
+      "howToGet": "Get directions",
+      "call": "Call",
+      "instructions": "Instructions",
+      "description": "Description",
+      "recipient": "Receives",
+      "team": "Team",
+      "arrivedAt": "You arrived at {{time}}",
+      "arrive": "Register arrival",
+      "finish": "Finish task",
+      "done": "This task is already completed.",
+      "delayQuestion": "Were you kept waiting?",
+      "yes": "Yes",
+      "no": "No",
+      "confirmArrival": "Confirm arrival",
+      "cancel": "Cancel",
+      "service": "Service",
+      "teamArrived": "arrived",
+      "teamPending": "not arrived"
+    },
+    "finish": {
+      "title": "Service record",
+      "hint": "Describe what you did. Use **bold** and lines starting with \"- \" for lists.",
+      "placeholder": "Describe the service performed…",
+      "bold": "Bold",
+      "bullet": "List",
+      "review": "Review and finish",
+      "reviewTitle": "Review before finishing",
+      "warning": "After finishing you will not be able to edit the record.",
+      "confirm": "Finish",
+      "back": "Keep editing",
+      "arrival": "Arrival",
+      "delayed": "Delayed",
+      "notDelayed": "Not delayed",
+      "saved": "Draft saved",
+      "sending": "Sending…",
+      "alreadyDone": "Another collaborator already finished this task.",
+      "empty": "Write the record to continue."
+    }
   }
 }

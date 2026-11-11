@@ -16,7 +16,13 @@ import type {
   ServiceTypeDto,
   UpdateCompanyInput,
 } from './catalogs';
+import type { TaskStatus } from './enums';
 import type {
+  ArrivalInput,
+  CollaboratorTaskDto,
+  CollaboratorTaskList,
+  FinalizeInput,
+  ReportDto,
   AssignmentInput,
   CreateTaskInput,
   ListTasksParams,
@@ -160,6 +166,21 @@ export function createApiClient(opts: ApiClientOptions) {
         request<CompanyDto>('PATCH', `/client-companies/${id}`, input),
       deactivate: (id: string) => request<CompanyDto>('POST', `/client-companies/${id}/deactivate`),
       reactivate: (id: string) => request<CompanyDto>('POST', `/client-companies/${id}/reactivate`),
+    },
+    myTasks: {
+      list: (params: { status?: TaskStatus[] } = {}) =>
+        request<CollaboratorTaskList>(
+          'GET',
+          `/tasks${query({ status: params.status?.join(',') })}`,
+        ),
+      get: (id: string) => request<CollaboratorTaskDto>('GET', `/tasks/${id}`),
+      arrival: (id: string, input: ArrivalInput) =>
+        request<CollaboratorTaskDto>('POST', `/tasks/${id}/arrival`, input),
+      finalize: (id: string, input: FinalizeInput) =>
+        request<{ report: ReportDto }>('POST', `/tasks/${id}/finalize`, input),
+      getDraft: (id: string) => request<{ contentJson: unknown }>('GET', `/tasks/${id}/draft`),
+      saveDraft: (id: string, contentJson: unknown) =>
+        request<void>('PUT', `/tasks/${id}/draft`, { contentJson }),
     },
     tasks: {
       list: ({ status, ...rest }: ListTasksParams = {}) =>

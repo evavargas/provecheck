@@ -42,7 +42,10 @@ export async function buildApp(env: Env) {
   });
 
   await app.register(helmet);
-  await app.register(cors, { origin: env.CORS_ORIGINS });
+  await app.register(cors, {
+    origin: env.CORS_ORIGINS,
+    methods: ['GET', 'HEAD', 'POST', 'PUT', 'PATCH', 'DELETE'],
+  });
   await app.register(rateLimit, { max: 300, timeWindow: '1 minute' });
 
   // Errors never leak internals; clients map `code` to an i18n key.
