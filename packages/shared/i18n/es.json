@@ -182,7 +182,13 @@
       "confirm": "Dar de baja",
       "pendingTitle": "Tiene tareas pendientes",
       "pendingBody": "Reasignalas antes de darlo de baja:",
-      "done": "{{name}} fue dado de baja."
+      "done": "{{name}} fue dado de baja.",
+      "chooseReplacement": "Reemplazo",
+      "createCollaborator": "Crear colaborador nuevo",
+      "confirmReassign": "Reasignar y dar de baja",
+      "impact": "Se reasignan {{count}} tareas y se cierran las sesiones de {{name}}.",
+      "pendingBodyWizard": "Elegí quién se hace cargo de cada tarea. Ninguna puede quedar sin colaborador.",
+      "pickOne": "Elegí un colaborador"
     },
     "reactivated": "{{name}} fue reactivado.",
     "updated": "Cambios guardados."

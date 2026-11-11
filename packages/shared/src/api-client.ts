@@ -6,6 +6,7 @@ import type {
   UpdateUserInput,
   UserDto,
   UserList,
+  Replacement,
 } from './users';
 import type {
   CompanyDto,
@@ -142,7 +143,8 @@ export function createApiClient(opts: ApiClientOptions) {
         request<UserDto>('PATCH', `/users/${id}`, input),
       setClientCompany: (id: string, clientCompanyId: string | null) =>
         request<UserDto>('PATCH', `/users/${id}/client-company`, { clientCompanyId }),
-      deactivate: (id: string) => request<UserDto>('POST', `/users/${id}/deactivate`),
+      deactivate: (id: string, replacements: Replacement[] = []) =>
+        request<UserDto>('POST', `/users/${id}/deactivate`, { replacements }),
       reactivate: (id: string) => request<UserDto>('POST', `/users/${id}/reactivate`),
       resetPassword: (id: string, temporaryPassword: string) =>
         request<void>('POST', `/users/${id}/reset-password`, { temporaryPassword }),

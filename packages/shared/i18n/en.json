@@ -182,7 +182,13 @@
       "confirm": "Deactivate",
       "pendingTitle": "They have pending tasks",
       "pendingBody": "Reassign them before deactivating:",
-      "done": "{{name}} was deactivated."
+      "done": "{{name}} was deactivated.",
+      "chooseReplacement": "Replacement",
+      "createCollaborator": "Create new collaborator",
+      "confirmReassign": "Reassign and deactivate",
+      "impact": "{{count}} tasks will be reassigned and {{name}} will be signed out.",
+      "pendingBodyWizard": "Pick who takes over each task. No task can be left without a collaborator.",
+      "pickOne": "Pick a collaborator"
     },
     "reactivated": "{{name}} was reactivated.",
     "updated": "Changes saved."

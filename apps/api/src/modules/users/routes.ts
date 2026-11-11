@@ -2,6 +2,7 @@ import {
   availabilityQuery,
   clientCompanyInput,
   createUserInput,
+  deactivateUserInput,
   listUsersQuery,
   resetPasswordInput,
   updateUserInput,
@@ -44,7 +45,11 @@ export async function usersRoutes(app: FastifyInstance, opts: { users: UsersServ
   );
 
   app.post('/users/:id/deactivate', async (req) =>
-    users.deactivate(req.auth, idParams.parse(req.params).id),
+    users.deactivate(
+      req.auth,
+      idParams.parse(req.params).id,
+      deactivateUserInput.parse(req.body ?? {}).replacements,
+    ),
   );
   app.post('/users/:id/reactivate', async (req) =>
     users.reactivate(req.auth, idParams.parse(req.params).id),

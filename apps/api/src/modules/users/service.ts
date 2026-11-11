@@ -3,6 +3,7 @@ import type {
   CreateUserInput,
   ListUsersQuery,
   PendingTaskDto,
+  Replacement,
   UpdateUserInput,
   UserDto,
   UserList,
@@ -226,8 +227,8 @@ export function createUsersService(deps: { db: Db; supabase: Supabase }) {
       });
     },
 
-    /** Pending work blocks the deactivation: the reassignment wizard (P-09) comes with the task module. */
-    async deactivate(actor: Actor, id: string): Promise<UserDto> {
+    /** Pending work blocks the deactivation unless every pending task comes with a replacement (P-09). */
+    async deactivate(actor: Actor, id: string, replacements: Replacement[] = []): Promise<UserDto> {
       if (id === actor.id) throw new AppError('FORBIDDEN');
       const dto = await db.asActor(actor, async (c) => {
         const before = await getRow(c, id);
@@ -243,7 +244,9 @@ export function createUsersService(deps: { db: Db; supabase: Supabase }) {
              WHERE a.collaborator_id = $1 AND a.active AND t.status IN ('scheduled','on_site') ORDER BY t.scheduled_start_at`,
             [id],
           );
-          if (rows.length) {
+          const byTask = new Map(replacements.map((r) => [r.taskId, r.collaboratorId]));
+          const missing = rows.filter((r) => !byTask.has(r.id));
+          if (missing.length || byTask.size !== rows.length) {
             const tasks: PendingTaskDto[] = rows.map((r) => ({
               id: r.id,
               address: r.address,
@@ -251,6 +254,49 @@ export function createUsersService(deps: { db: Db; supabase: Supabase }) {
               status: r.status,
             }));
             throw new AppError('HAS_PENDING_TASKS', { tasks });
+          }
+          for (const task of rows) {
+            const newId = byTask.get(task.id)!;
+            const ok = await c.query(
+              `SELECT 1 FROM users WHERE id = $1 AND id <> $2 AND role = 'collaborator' AND status <> 'inactive'`,
+              [newId, id],
+            );
+            if (!ok.rowCount)
+              throw new AppError('VALIDATION_ERROR', { field: 'collaboratorId', taskId: task.id });
+            const old = await c.query<{ id: string; fee: string | null }>(
+              `UPDATE task_assignments SET active = false WHERE task_id = $1 AND collaborator_id = $2 AND active
+               RETURNING id, collaborator_fee_uyu AS fee`,
+              [task.id, id],
+            );
+            let created;
+            try {
+              // The replacement inherits the fee agreed for the task.
+              created = await c.query<{ id: string }>(
+                `INSERT INTO task_assignments (organization_id, task_id, collaborator_id, collaborator_fee_uyu)
+                 VALUES ($1,$2,$3,$4) RETURNING id`,
+                [actor.orgId, task.id, newId, old.rows[0]!.fee],
+              );
+            } catch (err) {
+              if ((err as { code?: string }).code === UNIQUE_VIOLATION)
+                throw new AppError('VALIDATION_ERROR', {
+                  field: 'collaboratorId',
+                  taskId: task.id,
+                });
+              throw err;
+            }
+            await c.query('UPDATE task_assignments SET replaced_by = $2 WHERE id = $1', [
+              old.rows[0]!.id,
+              created.rows[0]!.id,
+            ]);
+            await audit(c, {
+              orgId: actor.orgId,
+              actorId: actor.id,
+              entity: 'task',
+              entityId: task.id,
+              action: 'assignment_replace',
+              before: { collaboratorId: id },
+              after: { collaboratorId: newId, reason: 'deactivation' },
+            });
           }
         }
         await c.query(`UPDATE users SET status = 'inactive' WHERE id = $1`, [id]);

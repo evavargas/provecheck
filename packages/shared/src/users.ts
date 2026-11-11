@@ -55,6 +55,19 @@ export const availabilityQuery = z.object({
   exceptUserId: z.string().uuid().optional(),
 });
 export const resetPasswordInput = z.object({ temporaryPassword: passwordSchema }).strict();
+/** P-09: one replacement per pending task, applied in the same transaction as the deactivation (RN-14, RN-27). */
+export const deactivateUserInput = z
+  .object({
+    replacements: z
+      .array(z.object({ taskId: z.string().uuid(), collaboratorId: z.string().uuid() }).strict())
+      .max(500)
+      .default([]),
+  })
+  .strict();
+export type Replacement = z.input<typeof deactivateUserInput>['replacements'] extends
+  (infer R)[] | undefined
+  ? R
+  : never;
 export const clientCompanyInput = z
   .object({ clientCompanyId: z.string().uuid().nullable() })
   .strict();

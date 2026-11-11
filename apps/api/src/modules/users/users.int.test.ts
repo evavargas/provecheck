@@ -398,4 +398,60 @@ describe('reset password', () => {
       ).statusCode,
     ).toBe(422);
   });
+
+  it('deactivates with replacements, atomically (P-09, RN-14, RN-27)', async () => {
+    const leaving = await activeUser('leaving');
+    const stays = await activeUser('stays');
+    const other = await activeUser('other-c');
+    const mk = async () => {
+      const id = randomUUID();
+      await db.pool.query(
+        `INSERT INTO tasks (id, organization_id, client_user_id, address, scheduled_start_at, description, created_by)
+         VALUES ($1,$2,$3,'Street 9', now() + interval '1 day', 'work', $4)`,
+        [id, orgId, adminId, adminId],
+      );
+      await db.pool.query(
+        `INSERT INTO task_assignments (organization_id, task_id, collaborator_id, collaborator_fee_uyu) VALUES ($1,$2,$3,250)`,
+        [orgId, id, leaving.id],
+      );
+      return id;
+    };
+    const [t1, t2] = [await mk(), await mk()];
+    const path = `/users/${leaving.id}/deactivate`;
+
+    // A missing replacement keeps everything as it was.
+    const partial = await call('POST', path, adminToken, {
+      replacements: [{ taskId: t1, collaboratorId: stays.id }],
+    });
+    expect(partial.json().code).toBe('HAS_PENDING_TASKS');
+    // An invalid replacement (a client user) rolls back the whole thing, including the valid first one.
+    const bad = await call('POST', path, adminToken, {
+      replacements: [
+        { taskId: t1, collaboratorId: stays.id },
+        { taskId: t2, collaboratorId: adminId },
+      ],
+    });
+    expect(bad.statusCode).toBe(422);
+    const active = await db.pool.query(
+      'SELECT count(*)::int AS n FROM task_assignments WHERE collaborator_id = $1 AND active',
+      [leaving.id],
+    );
+    expect(active.rows[0].n).toBe(2);
+    expect((await call('GET', `/users/${leaving.id}`, adminToken)).json().status).toBe('active');
+
+    const ok = await call('POST', path, adminToken, {
+      replacements: [
+        { taskId: t1, collaboratorId: stays.id },
+        { taskId: t2, collaboratorId: other.id },
+      ],
+    });
+    expect(ok.statusCode).toBe(200);
+    expect(ok.json().status).toBe('inactive');
+    const { rows } = await db.pool.query(
+      `SELECT task_id, collaborator_id, collaborator_fee_uyu AS fee FROM task_assignments WHERE active AND task_id = ANY($1) ORDER BY task_id`,
+      [[t1, t2]],
+    );
+    expect(rows.map((r) => r.collaborator_id).sort()).toEqual([stays.id, other.id].sort());
+    expect(rows.every((r) => Number(r.fee) === 250)).toBe(true);
+  });
 });
