@@ -8,7 +8,7 @@ import {
 import type { FastifyInstance } from 'fastify';
 import { AttemptLimiter } from '../../lib/attempt-limiter.js';
 import { AppError } from '../../lib/errors.js';
-import type { AuthContext, AuthService } from './service.js';
+import type { AuthService } from './service.js';
 
 export async function authRoutes(
   app: FastifyInstance,
