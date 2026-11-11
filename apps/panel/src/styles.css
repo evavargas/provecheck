@@ -496,10 +496,10 @@ button.ghost {
   .sidebar {
     transform: translateX(-100%);
     transition: transform 0.2s ease;
-    box-shadow: 0 0 40px rgb(0 0 0 / 0.3);
   }
   .sidebar[data-open='true'] {
     transform: none;
+    box-shadow: 0 0 40px rgb(0 0 0 / 0.3);
   }
   .sidebar-close {
     display: inline-grid;
@@ -1037,4 +1037,92 @@ button.ghost {
 .inline-form .plain-input {
   flex: 1 1 220px;
   max-width: 420px;
+}
+
+/* ---------- Tasks ---------- */
+.task-scheduled {
+  --chip-bg: #dce9ee;
+  --chip-fg: #0f4c5c;
+}
+.task-on_site,
+.task-in_review {
+  --chip-bg: #e0a100; /* amber only as a background, always with dark text */
+  --chip-fg: #1b2528;
+}
+.task-completed,
+.task-resolved {
+  --chip-bg: #ddf1e5;
+  --chip-fg: #17613a;
+}
+.task-objection_filed {
+  --chip-bg: #f7dcd8;
+  --chip-fg: #8e2a1e;
+}
+.task-cancelled {
+  --chip-bg: #e6eaec;
+  --chip-fg: #4a565b;
+}
+[data-theme='dark'] .task-scheduled {
+  --chip-bg: #16343c;
+  --chip-fg: #8fd0e0;
+}
+[data-theme='dark'] .task-completed,
+[data-theme='dark'] .task-resolved {
+  --chip-bg: #14332a;
+  --chip-fg: #4cc38a;
+}
+[data-theme='dark'] .task-objection_filed {
+  --chip-bg: #43211d;
+  --chip-fg: #f2a69c;
+}
+[data-theme='dark'] .task-cancelled {
+  --chip-bg: #2a3236;
+  --chip-fg: #b4c0c5;
+}
+.assign-row {
+  display: grid;
+  grid-template-columns: 1fr 140px;
+  align-items: center;
+  gap: 10px;
+}
+.assign-row .plain-input {
+  min-height: 40px;
+}
+.assign-list {
+  display: grid;
+  gap: 10px;
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+.assign-item {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 12px 14px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+}
+.assign-item.off {
+  opacity: 0.65;
+}
+.detail-grid {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  gap: 8px 16px;
+  margin: 0 0 20px;
+}
+.detail-grid dt {
+  color: var(--text-muted, #4a565b);
+}
+.detail-grid dd {
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+.section-title {
+  margin: 0 0 10px;
+  font-size: 1rem;
+  font-weight: 600;
 }

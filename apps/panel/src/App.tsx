@@ -14,6 +14,7 @@ import { useQueryClient } from '@tanstack/react-query';
 import { HomePage } from './features/home/HomePage';
 import { CompaniesPage } from './features/companies/CompaniesPage';
 import { ServiceTypesPage } from './features/service-types/ServiceTypesPage';
+import { TasksPage } from './features/tasks/TasksPage';
 import { UsersPage } from './features/users/UsersPage';
 import { AppShell } from './layout/AppShell';
 import { SessionContext } from './session';
@@ -109,6 +110,7 @@ export function App() {
         <AppShell>
           <Routes>
             <Route path="/" element={<HomePage />} />
+            <Route path="/tasks" element={<TasksPage />} />
             <Route path="/companies" element={<CompaniesPage />} />
             <Route path="/users" element={<UsersPage />} />
             <Route path="/service-types" element={<ServiceTypesPage />} />

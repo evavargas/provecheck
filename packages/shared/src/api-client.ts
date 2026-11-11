@@ -15,6 +15,14 @@ import type {
   ServiceTypeDto,
   UpdateCompanyInput,
 } from './catalogs';
+import type {
+  AssignmentInput,
+  CreateTaskInput,
+  ListTasksParams,
+  TaskDto,
+  TaskList,
+  UpdateTaskInput,
+} from './tasks';
 import type { ApiError, ErrorCode } from './errors';
 import type {
   FirstLoginInput,
@@ -150,6 +158,19 @@ export function createApiClient(opts: ApiClientOptions) {
         request<CompanyDto>('PATCH', `/client-companies/${id}`, input),
       deactivate: (id: string) => request<CompanyDto>('POST', `/client-companies/${id}/deactivate`),
       reactivate: (id: string) => request<CompanyDto>('POST', `/client-companies/${id}/reactivate`),
+    },
+    tasks: {
+      list: ({ status, ...rest }: ListTasksParams = {}) =>
+        request<TaskList>('GET', `/tasks${query({ ...rest, status: status?.join(',') })}`),
+      create: (input: CreateTaskInput) => request<TaskDto>('POST', '/tasks', input),
+      update: (id: string, input: UpdateTaskInput) =>
+        request<TaskDto>('PATCH', `/tasks/${id}`, input),
+      cancel: (id: string, reason: string) =>
+        request<TaskDto>('POST', `/tasks/${id}/cancel`, { reason }),
+      addAssignment: (id: string, input: AssignmentInput) =>
+        request<TaskDto>('POST', `/tasks/${id}/assignments`, input),
+      replaceAssignment: (id: string, assignmentId: string, input: AssignmentInput) =>
+        request<TaskDto>('POST', `/tasks/${id}/assignments/${assignmentId}/replace`, input),
     },
     serviceTypes: {
       list: (active?: boolean) =>

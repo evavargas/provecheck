@@ -29,7 +29,7 @@ interface NavItem {
 // Only the sections that exist are links; the rest keep their place in the menu, disabled.
 const NAV: NavItem[] = [
   { key: 'home', icon: House, to: '/' },
-  { key: 'tasks', icon: ClipboardList },
+  { key: 'tasks', icon: ClipboardList, to: '/tasks' },
   { key: 'objections', icon: Gavel },
   { key: 'companies', icon: Building2, to: '/companies' },
   { key: 'users', icon: Users, to: '/users' },

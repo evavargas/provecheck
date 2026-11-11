@@ -33,7 +33,8 @@
     "INTERNAL": "Something went wrong. Please try again.",
     "NETWORK": "You need a connection to sign in.",
     "HAS_PENDING_TASKS": "There are pending tasks. Reassign them before deactivating.",
-    "NAME_TAKEN": "One with that name already exists."
+    "NAME_TAKEN": "One with that name already exists.",
+    "EMPTY_ASSIGNMENT": "The task needs at least one collaborator."
   },
   "auth": {
     "title": "Sign in",
@@ -263,5 +264,107 @@
     "save": "Save name",
     "empty": "There are no service types yet.",
     "nameTaken": "A type with that name already exists."
+  },
+  "taskStatus": {
+    "scheduled": "Scheduled",
+    "on_site": "On site",
+    "completed": "Completed",
+    "objection_filed": "Objection filed",
+    "in_review": "In review",
+    "resolved": "Resolved",
+    "cancelled": "Cancelled"
+  },
+  "tasks": {
+    "title": "Tasks",
+    "subtitle": "Scheduled, ongoing and completed services",
+    "new": "New task",
+    "filterSearch": "Search by address or description…",
+    "filterStatus": "Status",
+    "allStatuses": "All statuses",
+    "col": {
+      "start": "Scheduled start",
+      "recipient": "Client",
+      "address": "Address",
+      "service": "Service type",
+      "collaborators": "Collaborators",
+      "status": "Status",
+      "cost": "Cost",
+      "actions": "Actions"
+    },
+    "action": {
+      "view": "View details",
+      "edit": "Edit",
+      "cancel": "Cancel task"
+    },
+    "created": "Task created.",
+    "updated": "Task updated.",
+    "cancelled": "Task cancelled.",
+    "assignmentChanged": "Assignment updated.",
+    "noService": "No type",
+    "noCost": "—",
+    "form": {
+      "createTitle": "New task",
+      "createSubtitle": "Created as scheduled, with at least one collaborator",
+      "editTitle": "Edit task",
+      "editSubtitle": "Once on site, the client and schedule are locked",
+      "recipient": "Recipient",
+      "company": "Client company",
+      "clientUser": "Client user",
+      "none": "None",
+      "recipientHint": "Pick a company, a client user, or both.",
+      "recipientRequired": "Pick at least a company or a client user.",
+      "service": "Service",
+      "serviceType": "Service type",
+      "address": "Address",
+      "addressHint": "If left empty, the company address is used.",
+      "recipientName": "Person who receives",
+      "description": "Description",
+      "instructions": "Instructions for the collaborator",
+      "schedule": "Schedule",
+      "start": "Scheduled start",
+      "hours": "Assigned hours",
+      "assignment": "Collaborators",
+      "assignmentHint": "Required: at least one.",
+      "fee": "Fee UYU",
+      "costs": "Task cost (UYU)",
+      "costsHint": "Only visible to administrators.",
+      "create": "Create task",
+      "noCollaborators": "No collaborators available.",
+      "assignmentRequired": "Pick at least one collaborator."
+    },
+    "detail": {
+      "title": "Task details",
+      "summary": "Summary",
+      "assignments": "Assignments",
+      "active": "Active",
+      "replacedState": "Replaced",
+      "arrived": "Arrived",
+      "notArrived": "No arrival",
+      "delayed": "Delayed",
+      "fee": "Fee",
+      "replace": "Reassign",
+      "add": "Add collaborator",
+      "cancelReason": "Cancellation reason",
+      "deadline": "Objections until",
+      "created": "Created",
+      "instructions": "Instructions",
+      "recipientName": "Receives",
+      "cost": "Cost"
+    },
+    "replace": {
+      "title": "Reassign collaborator",
+      "subtitle": "Replaces {{name}} on this task",
+      "newCollaborator": "New collaborator",
+      "confirm": "Reassign",
+      "addTitle": "Add collaborator",
+      "addConfirm": "Add"
+    },
+    "cancel": {
+      "title": "Cancel task",
+      "body": "The task stops being active for the collaborator. This cannot be undone.",
+      "reason": "Reason",
+      "confirm": "Cancel task",
+      "back": "Back"
+    }
   }
 }

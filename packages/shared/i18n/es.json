@@ -33,7 +33,8 @@
     "INTERNAL": "Algo salió mal. Probá de nuevo.",
     "NETWORK": "Necesitás conexión para ingresar.",
     "HAS_PENDING_TASKS": "Tiene tareas pendientes. Reasignalas antes de dar de baja.",
-    "NAME_TAKEN": "Ya existe uno con ese nombre."
+    "NAME_TAKEN": "Ya existe uno con ese nombre.",
+    "EMPTY_ASSIGNMENT": "La tarea necesita al menos un colaborador."
   },
   "auth": {
     "title": "Iniciar sesión",
@@ -263,5 +264,107 @@
     "save": "Guardar nombre",
     "empty": "Todavía no hay tipos de servicio.",
     "nameTaken": "Ya existe un tipo con ese nombre."
+  },
+  "taskStatus": {
+    "scheduled": "Programada",
+    "on_site": "En sitio",
+    "completed": "Finalizada",
+    "objection_filed": "Descargo realizado",
+    "in_review": "En gestión",
+    "resolved": "Resuelta",
+    "cancelled": "Cancelada"
+  },
+  "tasks": {
+    "title": "Tareas",
+    "subtitle": "Servicios programados, en curso y finalizados",
+    "new": "Nueva tarea",
+    "filterSearch": "Buscar por dirección o descripción…",
+    "filterStatus": "Estado",
+    "allStatuses": "Todos los estados",
+    "col": {
+      "start": "Inicio pautado",
+      "recipient": "Cliente",
+      "address": "Dirección",
+      "service": "Tipo de servicio",
+      "collaborators": "Colaboradores",
+      "status": "Estado",
+      "cost": "Costo",
+      "actions": "Acciones"
+    },
+    "action": {
+      "view": "Ver detalle",
+      "edit": "Editar",
+      "cancel": "Cancelar tarea"
+    },
+    "created": "Tarea creada.",
+    "updated": "Tarea actualizada.",
+    "cancelled": "Tarea cancelada.",
+    "assignmentChanged": "Asignación actualizada.",
+    "noService": "Sin tipo",
+    "noCost": "—",
+    "form": {
+      "createTitle": "Nueva tarea",
+      "createSubtitle": "Se crea programada y con al menos un colaborador",
+      "editTitle": "Editar tarea",
+      "editSubtitle": "Una vez en sitio no se cambian el cliente ni la programación",
+      "recipient": "Destinatario",
+      "company": "Empresa cliente",
+      "clientUser": "Usuario cliente",
+      "none": "Ninguno",
+      "recipientHint": "Elegí una empresa, un usuario cliente o ambos.",
+      "recipientRequired": "Elegí al menos una empresa o un usuario cliente.",
+      "service": "Servicio",
+      "serviceType": "Tipo de servicio",
+      "address": "Dirección",
+      "addressHint": "Si la dejás vacía se usa la de la empresa.",
+      "recipientName": "Persona que recibe",
+      "description": "Descripción",
+      "instructions": "Indicaciones para el colaborador",
+      "schedule": "Programación",
+      "start": "Inicio pautado",
+      "hours": "Horas asignadas",
+      "assignment": "Colaboradores",
+      "assignmentHint": "Obligatorio: al menos uno.",
+      "fee": "Importe UYU",
+      "costs": "Costo de la tarea (UYU)",
+      "costsHint": "Solo lo ve la administración.",
+      "create": "Crear tarea",
+      "noCollaborators": "No hay colaboradores disponibles.",
+      "assignmentRequired": "Elegí al menos un colaborador."
+    },
+    "detail": {
+      "title": "Detalle de tarea",
+      "summary": "Resumen",
+      "assignments": "Asignaciones",
+      "active": "Activa",
+      "replacedState": "Reemplazada",
+      "arrived": "Llegó",
+      "notArrived": "Sin llegada",
+      "delayed": "Con demora",
+      "fee": "Importe",
+      "replace": "Reasignar",
+      "add": "Agregar colaborador",
+      "cancelReason": "Motivo de cancelación",
+      "deadline": "Descargos hasta",
+      "created": "Creada",
+      "instructions": "Indicaciones",
+      "recipientName": "Recibe",
+      "cost": "Costo"
+    },
+    "replace": {
+      "title": "Reasignar colaborador",
+      "subtitle": "Reemplaza a {{name}} en esta tarea",
+      "newCollaborator": "Nuevo colaborador",
+      "confirm": "Reasignar",
+      "addTitle": "Agregar colaborador",
+      "addConfirm": "Agregar"
+    },
+    "cancel": {
+      "title": "Cancelar tarea",
+      "body": "La tarea deja de estar activa para el colaborador. Esta acción no se puede deshacer.",
+      "reason": "Motivo",
+      "confirm": "Cancelar tarea",
+      "back": "Volver"
+    }
   }
 }
