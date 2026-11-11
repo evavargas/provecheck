@@ -18,6 +18,7 @@ import { createCollaboratorTasks } from './modules/tasks/collaborator.js';
 import { createTaskMedia } from './modules/tasks/media.js';
 import { createStorage } from './lib/storage.js';
 import { createDocumentHandlers } from './modules/documents/handlers.js';
+import { createMaintenanceHandlers } from './modules/documents/maintenance.js';
 import { createWorker, type Worker } from './lib/jobs.js';
 import nodemailer, { type Transporter } from 'nodemailer';
 import { createClientTasks } from './modules/feedback/client.js';
@@ -25,7 +26,7 @@ import { createFeedbackAdmin } from './modules/feedback/admin.js';
 import { feedbackRoutes } from './modules/feedback/routes.js';
 import { createTasksService } from './modules/tasks/service.js';
 import { usersRoutes } from './modules/users/routes.js';
-import { createDb } from './plugins/db.js';
+import { createDb, type Db } from './plugins/db.js';
 import { createSupabase } from './plugins/supabase.js';
 
 export async function buildApp(env: Env, overrides: { mailer?: Transporter } = {}) {
@@ -57,10 +58,14 @@ export async function buildApp(env: Env, overrides: { mailer?: Transporter } = {
   // Jobs run in this process (spec 9); `server.ts` starts the loop, tests call `runOnce`.
   const worker = createWorker({
     db,
-    handlers: createDocumentHandlers({ db, storage, mailer, env }),
+    handlers: {
+      ...createDocumentHandlers({ db, storage, mailer, env }),
+      ...createMaintenanceHandlers({ db, storage }),
+    },
     log: app.log,
   });
   app.decorate('worker', worker);
+  app.decorate('db', db);
   app.addHook('onClose', async () => {
     await db.pool.end();
   });
@@ -124,6 +129,7 @@ export async function buildApp(env: Env, overrides: { mailer?: Transporter } = {
 declare module 'fastify' {
   interface FastifyInstance {
     worker: Worker;
+    db: Db;
   }
 }
 

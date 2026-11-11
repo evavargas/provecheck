@@ -39,14 +39,14 @@ export function createWorker(deps: {
   let running = false;
 
   /** Claims one due job (or a stuck one whose lock expired) and returns it, or null. */
-  async function claim(organizationId?: string): Promise<Job | null> {
+  async function claim(organizationId?: string, type?: string): Promise<Job | null> {
     return db.tx(async (c) => {
       const { rows } = await c.query(
         `SELECT id, organization_id, type, payload, attempts, max_attempts FROM jobs
          WHERE ((status = 'pending' AND run_at <= now()) OR (status = 'running' AND locked_until < now()))
-           AND ($1::uuid IS NULL OR organization_id = $1)
+           AND ($1::uuid IS NULL OR organization_id = $1) AND ($2::text IS NULL OR type = $2)
          ORDER BY run_at LIMIT 1 FOR UPDATE SKIP LOCKED`,
-        [organizationId ?? null],
+        [organizationId ?? null, type ?? null],
       );
       const r = rows[0];
       if (!r) return null;
@@ -56,7 +56,7 @@ export function createWorker(deps: {
       );
       return {
         id: r.id,
-        organizationId: r.organization_id,
+        organizationId: r.organization_id as string,
         type: r.type,
         payload: r.payload,
         attempts: r.attempts + 1,
@@ -82,10 +82,14 @@ export function createWorker(deps: {
     );
   }
 
-  /** Runs due jobs one by one until none is left; returns how many ran. `organizationId` narrows it (tests). */
-  async function runOnce(organizationId?: string): Promise<number> {
+  /** Runs due jobs one by one until none is left; returns how many ran. `organizationId` and `type` narrow it (tests). */
+  async function runOnce(organizationId?: string, type?: string): Promise<number> {
     let n = 0;
-    for (let job = await claim(organizationId); job; job = await claim(organizationId)) {
+    for (
+      let job = await claim(organizationId, type);
+      job;
+      job = await claim(organizationId, type)
+    ) {
       n++;
       try {
         const handler = handlers[job.type];
@@ -102,11 +106,12 @@ export function createWorker(deps: {
 
   return {
     runOnce,
-    start(intervalMs = 5000) {
+    start(intervalMs = 5000, schedule?: () => Promise<void>) {
       timer = setInterval(() => {
         if (running) return;
         running = true;
-        runOnce()
+        (schedule ?? (async () => undefined))()
+          .then(() => runOnce())
           .catch((err) => log?.error({ err }, 'worker loop failed'))
           .finally(() => (running = false));
       }, intervalMs);
