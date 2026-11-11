@@ -18,6 +18,9 @@ import type {
 } from './catalogs';
 import type { TaskStatus } from './enums';
 import type {
+  OutboxDto,
+  TaskDocumentDto,
+  TaskReportDto,
   PresignPhotoInput,
   PresignedPhotoDto,
   ArrivalInput,
@@ -200,6 +203,17 @@ export function createApiClient(opts: ApiClientOptions) {
         request<TaskDto>('POST', `/tasks/${id}/assignments`, input),
       replaceAssignment: (id: string, assignmentId: string, input: AssignmentInput) =>
         request<TaskDto>('POST', `/tasks/${id}/assignments/${assignmentId}/replace`, input),
+    },
+    taskDocs: {
+      report: (id: string) => request<TaskReportDto>('GET', `/tasks/${id}/report`),
+      pdf: (id: string) => request<TaskDocumentDto>('GET', `/tasks/${id}/pdf`),
+      outbox: (id: string) => request<{ items: OutboxDto[] }>('GET', `/tasks/${id}/outbox`),
+      resend: (id: string, recipientOverride?: string) =>
+        request<void>(
+          'POST',
+          `/tasks/${id}/resend-pdf`,
+          recipientOverride ? { recipientOverride } : {},
+        ),
     },
     serviceTypes: {
       list: (active?: boolean) =>

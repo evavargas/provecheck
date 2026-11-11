@@ -283,6 +283,10 @@ describe('pdf and mail queue', () => {
     );
     expect(outbox.rows).toEqual([{ status: 'sent', recipient: 'billing@client.test' }]);
 
+    const history = (await call('GET', `/tasks/${taskId}/outbox`, adminToken)).json();
+    expect(history.items).toMatchObject([{ status: 'sent', recipient: 'billing@client.test' }]);
+    expect((await call('GET', `/tasks/${taskId}/outbox`, collabToken)).statusCode).toBe(403);
+
     // Running again changes nothing: no second PDF, no second mail.
     await app.worker.runOnce();
     expect(

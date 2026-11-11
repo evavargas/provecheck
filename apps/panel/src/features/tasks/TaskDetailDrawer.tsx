@@ -9,6 +9,7 @@ import { SelectField } from '../../components/SelectField';
 import { Modal } from '../../components/ui/Modal';
 import { formatDateTime, formatMoney } from '../../lib/format';
 import { errorMessage } from '../auth/errors';
+import { TaskDocuments } from './TaskDocuments';
 
 /** Picks who takes over (or joins) and the fee; used for both reassigning and adding. */
 function AssignDialog({
@@ -184,6 +185,9 @@ export function TaskDetailDrawer({
             </li>
           ))}
         </ul>
+        {['completed', 'objection_filed', 'in_review', 'resolved'].includes(task.status) && (
+          <TaskDocuments task={task} />
+        )}
         {open && (
           <button className="ghost" onClick={() => setDialog({ replacing: null })}>
             <Plus size={18} aria-hidden /> {t('tasks.detail.add')}

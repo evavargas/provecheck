@@ -76,6 +76,9 @@ export async function tasksRoutes(
     return media.report(req.auth, idParams.parse(req.params).id);
   });
   app.get('/tasks/:id/pdf', async (req) => media.document(req.auth, idParams.parse(req.params).id));
+  app.get('/tasks/:id/outbox', admin, async (req) =>
+    media.outbox(req.auth, idParams.parse(req.params).id),
+  );
   app.post('/tasks/:id/resend-pdf', admin, async (req, reply) => {
     await media.resend(
       req.auth,

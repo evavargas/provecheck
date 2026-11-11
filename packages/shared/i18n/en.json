@@ -376,6 +376,27 @@
       "reason": "Reason",
       "confirm": "Cancel task",
       "back": "Back"
+    },
+    "docs": {
+      "document": "Document",
+      "record": "Record",
+      "pdfOpen": "View PDF",
+      "pdfPending": "The PDF is still being generated.",
+      "mailHistory": "Mail",
+      "noMail": "No mails yet.",
+      "resend": "Resend PDF",
+      "resendTo": "Resend to another email (optional)",
+      "resendConfirm": "Resend",
+      "resendQueued": "Resend queued.",
+      "mail": {
+        "sent": "Sent",
+        "failed": "Failed",
+        "pending": "Pending",
+        "skipped_no_contact": "No contact"
+      },
+      "noContactAlert": "Neither the company nor the client user has an email: the PDF was not sent. You can resend it to another address.",
+      "photoExpired": "Photo expired",
+      "photo": "Photo"
     }
   },
   "collab": {

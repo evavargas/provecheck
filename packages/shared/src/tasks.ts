@@ -218,3 +218,13 @@ export interface TaskDocumentDto {
   version: number;
   generatedAt: string;
 }
+
+export interface OutboxDto {
+  id: string;
+  recipient: string | null;
+  status: 'pending' | 'sent' | 'failed' | 'skipped_no_contact';
+  attempts: number;
+  error: string | null;
+  createdAt: string;
+  sentAt: string | null;
+}

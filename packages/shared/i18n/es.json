@@ -376,6 +376,27 @@
       "reason": "Motivo",
       "confirm": "Cancelar tarea",
       "back": "Volver"
+    },
+    "docs": {
+      "document": "Documento",
+      "record": "Registro",
+      "pdfOpen": "Ver PDF",
+      "pdfPending": "El PDF todavía se está generando.",
+      "mailHistory": "Envíos",
+      "noMail": "Todavía no hay envíos.",
+      "resend": "Reenviar PDF",
+      "resendTo": "Reenviar a otro correo (opcional)",
+      "resendConfirm": "Reenviar",
+      "resendQueued": "Reenvío en cola.",
+      "mail": {
+        "sent": "Enviado",
+        "failed": "Falló",
+        "pending": "Pendiente",
+        "skipped_no_contact": "Sin contacto"
+      },
+      "noContactAlert": "La empresa y el usuario cliente no tienen correo: el PDF no se envió. Podés reenviarlo a otra dirección.",
+      "photoExpired": "Foto expirada",
+      "photo": "Foto"
     }
   },
   "collab": {

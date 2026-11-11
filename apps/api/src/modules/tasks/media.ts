@@ -2,6 +2,7 @@ import {
   MAX_PHOTOS_PER_REPORT,
   type PresignedPhotoDto,
   type PresignPhotoInput,
+  type OutboxDto,
   type ReportPhotoDto,
   type TaskDocumentDto,
   type TaskReportDto,
@@ -160,6 +161,35 @@ export function createTaskMedia(deps: { db: Db; storage: Storage }) {
         url: await storage.signedRead(doc.pdf_key),
         version: doc.version,
         generatedAt: doc.generated_at.toISOString(),
+      };
+    },
+
+    /** Mail history of a task for the admin (F9.3): sent, failed or skipped for lack of a contact. */
+    async outbox(actor: Actor, taskId: string): Promise<{ items: OutboxDto[] }> {
+      const { rows } = await db.asActor(actor, (c) =>
+        c.query<{
+          id: string;
+          recipient: string | null;
+          status: OutboxDto['status'];
+          attempts: number;
+          error: string | null;
+          created_at: Date;
+          sent_at: Date | null;
+        }>(
+          `SELECT id, recipient, status, attempts, error, created_at, sent_at FROM notifications_outbox WHERE task_id = $1 ORDER BY created_at DESC`,
+          [taskId],
+        ),
+      );
+      return {
+        items: rows.map((r) => ({
+          id: r.id,
+          recipient: r.recipient,
+          status: r.status,
+          attempts: r.attempts,
+          error: r.error,
+          createdAt: r.created_at.toISOString(),
+          sentAt: r.sent_at?.toISOString() ?? null,
+        })),
       };
     },
 
