@@ -31,16 +31,28 @@
     "forgotHint": "Si olvidaste tu contraseña, pedísela a tu administrador.",
     "adminOnly": "Esta cuenta no tiene acceso al panel.",
     "firstLogin": {
-      "title": "Confirmá tu mail y elegí tu contraseña",
-      "email": "Mail",
+      "title": "Confirmá tu mail y creá tu contraseña",
+      "email": "Correo electrónico",
       "newPassword": "Nueva contraseña",
       "repeatPassword": "Repetir contraseña",
       "confirmEmail": "Confirmo que este mail es mío",
       "submit": "Guardar y continuar",
       "mismatch": "Las contraseñas no coinciden.",
       "tooShort": "Usá al menos 10 caracteres.",
-      "sameAsTemporary": "La nueva contraseña tiene que ser distinta de la temporal."
-    }
+      "sameAsTemporary": "La nueva contraseña tiene que ser distinta de la temporal.",
+      "subtitle": "Para habilitar tu acceso completá la verificación de tus credenciales.",
+      "strength": "Fortaleza",
+      "weak": "Débil",
+      "medium": "Media",
+      "strong": "Fuerte",
+      "emailTaken": "Ese mail ya está en uso."
+    },
+    "panelTitle": "Panel de gestión",
+    "panelSubtitle": "Ingresá tus credenciales para acceder",
+    "appTagline": "Gestión de servicios de campo",
+    "subtitle": "Ingresá tus credenciales para continuar.",
+    "identifierPlaceholder": "ej. usuario@empresa.com",
+    "passwordPlaceholder": "Ingresá tu contraseña"
   },
   "prefs": {
     "theme": "Tema",

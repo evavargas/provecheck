@@ -106,25 +106,32 @@ export function App() {
 
   return (
     <div className="auth-page">
-      <div className="auth-prefs">{prefs}</div>
-      <div className="auth-box">
-        <div className="brand">{t('app.name')}</div>
-        {notice && state.screen === 'login' && (
-          <p role="alert" className="form-error">
-            {t(notice)}
-          </p>
-        )}
-        {state.screen === 'login' ? (
-          <LoginPage
-            onDone={(r: LoginResponse) => {
-              setNotice(null);
-              void enter(r.user);
-            }}
-          />
-        ) : (
-          <FirstLoginPage user={state.user} onDone={enter} />
-        )}
-      </div>
+      <header className="auth-header">
+        <span className="brand">{t('app.name')}</span>
+        {prefs}
+      </header>
+      <main className="auth-main">
+        <div className="auth-box">
+          {notice && state.screen === 'login' && (
+            <p role="alert" className="form-error notice">
+              {t(notice)}
+            </p>
+          )}
+          {state.screen === 'login' ? (
+            <LoginPage
+              onDone={(r: LoginResponse) => {
+                setNotice(null);
+                void enter(r.user);
+              }}
+            />
+          ) : (
+            <FirstLoginPage user={state.user} onDone={enter} />
+          )}
+        </div>
+      </main>
+      <footer className="auth-footer">
+        © {new Date().getFullYear()} {t('app.name')}
+      </footer>
     </div>
   );
 }

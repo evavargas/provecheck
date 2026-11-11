@@ -1,13 +1,13 @@
-import { useId, useState, type FormEvent } from 'react';
+import type { LoginResponse } from '@provecheck/shared';
+import { useState, type FormEvent } from 'react';
 import { useTranslation } from 'react-i18next';
 import { api } from '../../api/client';
-import { PasswordField } from '../../components/PasswordField';
+import { Field } from '../../components/Field';
+import { Icon, LogoMark } from '../../components/Icon';
 import { errorMessage } from './errors';
-import type { LoginResponse } from '@provecheck/shared';
 
 export function LoginPage({ onDone }: { onDone: (r: LoginResponse) => void }) {
   const { t } = useTranslation();
-  const idField = useId();
   const [identifier, setIdentifier] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState<string | null>(null);
@@ -28,33 +28,44 @@ export function LoginPage({ onDone }: { onDone: (r: LoginResponse) => void }) {
 
   return (
     <form className="card" onSubmit={submit} noValidate>
-      <h1>{t('auth.title')}</h1>
-      <div className="field">
-        <label htmlFor={idField}>{t('auth.identifier')}</label>
-        <input
-          id={idField}
-          value={identifier}
-          autoComplete="username"
-          autoCapitalize="none"
-          autoCorrect="off"
-          spellCheck={false}
-          onChange={(e) => setIdentifier(e.target.value)}
-          required
-        />
+      <div className="card-head">
+        <LogoMark />
+        <h1>{t('auth.panelTitle')}</h1>
+        <p>{t('auth.panelSubtitle')}</p>
       </div>
-      <PasswordField
+      <Field
+        label={t('auth.identifier')}
+        icon="person"
+        value={identifier}
+        onChange={setIdentifier}
+        placeholder={t('auth.identifierPlaceholder')}
+        autoComplete="username"
+        autoCapitalize="none"
+        autoCorrect="off"
+        spellCheck={false}
+        required
+      />
+      <Field
         label={t('auth.password')}
+        icon="lock"
         value={password}
         onChange={setPassword}
+        placeholder={t('auth.passwordPlaceholder')}
         autoComplete="current-password"
+        secret
+        required
       />
       <p role="alert" className="form-error">
-        {error}
+        {error && (
+          <>
+            <Icon name="error" size={16} /> {error}
+          </>
+        )}
       </p>
       <button type="submit" className="primary" disabled={busy || !identifier || !password}>
         {t('auth.submit')}
       </button>
-      <p className="hint">{t('auth.forgotHint')}</p>
+      <p className="hint-line">{t('auth.forgotHint')}</p>
     </form>
   );
 }

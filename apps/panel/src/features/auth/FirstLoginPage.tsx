@@ -1,19 +1,23 @@
-import { MIN_PASSWORD_LENGTH, ApiRequestError, type MeDto } from '@provecheck/shared';
+import { ApiRequestError, MIN_PASSWORD_LENGTH, type MeDto } from '@provecheck/shared';
 import { useId, useState, type FormEvent } from 'react';
 import { useTranslation } from 'react-i18next';
 import { api } from '../../api/client';
-import { PasswordField } from '../../components/PasswordField';
+import { Field } from '../../components/Field';
+import { LogoMark } from '../../components/Icon';
+import { StrengthMeter } from '../../components/StrengthMeter';
 import { errorMessage } from './errors';
 
 export function FirstLoginPage({ user, onDone }: { user: MeDto; onDone: (u: MeDto) => void }) {
   const { t } = useTranslation();
-  const emailId = useId();
   const confirmId = useId();
   const [email, setEmail] = useState(user.email);
   const [password, setPassword] = useState('');
   const [repeat, setRepeat] = useState('');
   const [confirmed, setConfirmed] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const [apiError, setApiError] = useState<{
+    field: 'email' | 'password' | 'form';
+    message: string;
+  } | null>(null);
   const [busy, setBusy] = useState(false);
 
   const tooShort = password.length > 0 && password.length < MIN_PASSWORD_LENGTH;
@@ -23,13 +27,17 @@ export function FirstLoginPage({ user, onDone }: { user: MeDto; onDone: (u: MeDt
   async function submit(e: FormEvent) {
     e.preventDefault();
     setBusy(true);
-    setError(null);
+    setApiError(null);
     try {
       onDone(await api.firstLogin({ email, newPassword: password }));
     } catch (err) {
-      const sameAsTemporary =
-        err instanceof ApiRequestError && err.details?.reason === 'same_as_temporary';
-      setError(sameAsTemporary ? t('auth.firstLogin.sameAsTemporary') : errorMessage(t, err));
+      if (err instanceof ApiRequestError && err.code === 'IDENTIFIER_TAKEN') {
+        setApiError({ field: 'email', message: t('auth.firstLogin.emailTaken') });
+      } else if (err instanceof ApiRequestError && err.details?.reason === 'same_as_temporary') {
+        setApiError({ field: 'password', message: t('auth.firstLogin.sameAsTemporary') });
+      } else {
+        setApiError({ field: 'form', message: errorMessage(t, err) });
+      }
     } finally {
       setBusy(false);
     }
@@ -37,30 +45,48 @@ export function FirstLoginPage({ user, onDone }: { user: MeDto; onDone: (u: MeDt
 
   return (
     <form className="card" onSubmit={submit} noValidate>
-      <h1>{t('auth.firstLogin.title')}</h1>
-      <div className="field">
-        <label htmlFor={emailId}>{t('auth.firstLogin.email')}</label>
-        <input
-          id={emailId}
-          type="email"
-          value={email}
-          autoComplete="email"
-          onChange={(e) => setEmail(e.target.value)}
-          required
-        />
+      <div className="card-head left">
+        <LogoMark size={40} />
+        <h1>{t('auth.firstLogin.title')}</h1>
+        <p>{t('auth.firstLogin.subtitle')}</p>
       </div>
-      <PasswordField
-        label={t('auth.firstLogin.newPassword')}
-        value={password}
-        onChange={setPassword}
-        autoComplete="new-password"
-        error={tooShort ? t('auth.firstLogin.tooShort') : undefined}
+      <Field
+        label={t('auth.firstLogin.email')}
+        icon="mail"
+        type="email"
+        value={email}
+        onChange={setEmail}
+        autoComplete="email"
+        error={apiError?.field === 'email' ? apiError.message : undefined}
+        required
       />
-      <PasswordField
+      <div>
+        <Field
+          label={t('auth.firstLogin.newPassword')}
+          icon="lock"
+          value={password}
+          onChange={setPassword}
+          autoComplete="new-password"
+          secret
+          required
+          error={
+            tooShort
+              ? t('auth.firstLogin.tooShort')
+              : apiError?.field === 'password'
+                ? apiError.message
+                : undefined
+          }
+        />
+        <StrengthMeter password={password} />
+      </div>
+      <Field
         label={t('auth.firstLogin.repeatPassword')}
+        icon="lock"
         value={repeat}
         onChange={setRepeat}
         autoComplete="new-password"
+        secret
+        required
         error={mismatch ? t('auth.firstLogin.mismatch') : undefined}
       />
       <div className="check">
@@ -73,7 +99,7 @@ export function FirstLoginPage({ user, onDone }: { user: MeDto; onDone: (u: MeDt
         <label htmlFor={confirmId}>{t('auth.firstLogin.confirmEmail')}</label>
       </div>
       <p role="alert" className="form-error">
-        {error}
+        {apiError?.field === 'form' ? apiError.message : ''}
       </p>
       <button type="submit" className="primary" disabled={busy || !valid}>
         {t('auth.firstLogin.submit')}

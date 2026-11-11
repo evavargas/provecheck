@@ -31,7 +31,7 @@
     "forgotHint": "If you forgot your password, ask your administrator.",
     "adminOnly": "This account cannot access the panel.",
     "firstLogin": {
-      "title": "Confirm your email and choose a password",
+      "title": "Confirm your email and create your password",
       "email": "Email",
       "newPassword": "New password",
       "repeatPassword": "Repeat password",
@@ -39,8 +39,20 @@
       "submit": "Save and continue",
       "mismatch": "Passwords do not match.",
       "tooShort": "Use at least 10 characters.",
-      "sameAsTemporary": "The new password must differ from the temporary one."
-    }
+      "sameAsTemporary": "The new password must differ from the temporary one.",
+      "subtitle": "To enable your access, complete the verification of your credentials.",
+      "strength": "Strength",
+      "weak": "Weak",
+      "medium": "Medium",
+      "strong": "Strong",
+      "emailTaken": "That email is already in use."
+    },
+    "panelTitle": "Management panel",
+    "panelSubtitle": "Enter your credentials to sign in",
+    "appTagline": "Field service management",
+    "subtitle": "Enter your credentials to continue.",
+    "identifierPlaceholder": "e.g. user@company.com",
+    "passwordPlaceholder": "Enter your password"
   },
   "prefs": {
     "theme": "Theme",
