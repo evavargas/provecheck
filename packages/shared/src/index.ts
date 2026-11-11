@@ -7,3 +7,4 @@ export * from './password-strength';
 export * from './logo';
 export * from './users';
 export * from './catalogs';
+export * from './tasks';

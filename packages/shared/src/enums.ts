@@ -7,3 +7,14 @@ export type ThemePreference = (typeof THEME_PREFERENCES)[number];
 export const LOCALES = ['es-UY', 'en'] as const;
 export type Locale = (typeof LOCALES)[number];
 export const DEFAULT_LOCALE: Locale = 'es-UY';
+
+export const TASK_STATUSES = [
+  'scheduled',
+  'on_site',
+  'completed',
+  'objection_filed',
+  'in_review',
+  'resolved',
+  'cancelled',
+] as const;
+export type TaskStatus = (typeof TASK_STATUSES)[number];
