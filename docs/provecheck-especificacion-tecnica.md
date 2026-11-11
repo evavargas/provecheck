@@ -83,9 +83,9 @@ Patrón de cola local: la llegada y el registro de la tarea se guardan primero e
 | Backend | Node.js 22 + Fastify + zod |
 | Base de datos | Postgres en Supabase + Drizzle |
 | Autenticación | Supabase Auth (email y contraseña, magic link) |
-| Fotos y PDF | Cloudflare R2 con URLs prefirmadas y regla de ciclo de vida |
+| Fotos y PDF | Supabase Storage (bucket privado) con URLs firmadas; el borrado a los 180 días lo hace un job diario |
 | Generación de PDF | @react-pdf/renderer en un worker Node |
-| Mail | Resend |
+| Mail | Gmail SMTP (nodemailer) con contraseña de aplicación, para el MVP |
 | Cola de procesos | pg-boss sobre Postgres |
 | Notificaciones push | Expo Push (FCM y APNs) |
 | CI/CD | GitHub Actions + EAS |
@@ -105,12 +105,12 @@ Supuestos: 20 empresas cliente, 60 usuarios cliente, 2 colaboradores, 30 tareas 
 | Servicio | Plan | Costo |
 |---|---|---|
 | Expo (framework, EAS Build, EAS Update, push) | Gratis: 15 builds Android y 15 iOS por mes en cola de baja prioridad, 1.000 usuarios activos de actualizaciones | USD 0 |
-| Cloudflare R2 (fotos y PDF) | 10 GB gratis, descarga gratis | USD 0 |
-| Resend | 3.000 mails por mes gratis (tope de 100 por día) | USD 0 |
-| Panel de gestión web | Hosting estático gratis (Cloudflare Pages o Render) | USD 0 |
+| Supabase Storage (fotos y PDF) | Incluido en el plan de Supabase: 1 GB en Free, 100 GB en Pro | USD 0 |
+| Gmail SMTP | Cuenta de Gmail existente; unos 500 envíos por día, compartidos con otros usos de la cuenta | USD 0 |
+| Panel de gestión web | Hosting estático gratis (Vercel, plan gratuito) | USD 0 |
 | Push, PDF, cola de procesos | Gratis / open source | USD 0 |
 | Backend Node en Render | Starter, siempre encendido (el gratis tarda cerca de 1 minuto en despertar) | USD 7 por mes |
-| Base de datos y autenticación | Opción mínima: Supabase Free con consulta periódica y backup nocturno a R2. Opción recomendada: Supabase Pro | USD 0 o USD 25 por mes |
+| Base de datos y autenticación | Opción mínima: Supabase Free con consulta periódica y backup nocturno a un destino externo. Opción recomendada: Supabase Pro (necesaria cuando las fotos pasen 1 GB, ver 8.5) | USD 0 o USD 25 por mes |
 | Dominio | .uy USD 9,90 más IVA por año (revendedor); .com unos USD 26 más IVA por año | USD 12,08 por año |
 | Apple Developer Program | Anual | USD 99 por año |
 | Google Play | Pago único | USD 25 |
@@ -123,8 +123,8 @@ Expo no hace falta pagarlo. El framework es gratuito. Solo se pagaría el plan d
 |---|---|---|
 | Render Starter (backend) | 7,00 | 7,00 |
 | Supabase (base de datos y autenticación) | 0,00 | 25,00 |
-| Cloudflare R2 | 0,00 | 0,00 |
-| Resend (mails) | 0,00 | 0,00 |
+| Supabase Storage (incluido en el plan) | 0,00 | 0,00 |
+| Gmail SMTP (mails) | 0,00 | 0,00 |
 | Expo / EAS | 0,00 | 0,00 |
 | Panel de gestión web y push | 0,00 | 0,00 |
 | Apple Developer (99 dividido 12) | 8,25 | 8,25 |
@@ -138,7 +138,7 @@ Expo no hace falta pagarlo. El framework es gratuito. Solo se pagaría el plan d
 |---|---|---|
 | Render Starter (7 por 12) | 84,00 | 84,00 |
 | Supabase Pro (25 por 12) | 0,00 | 300,00 |
-| R2, Resend, Expo, panel de gestión web, push | 0,00 | 0,00 |
+| Storage, Gmail, Expo, panel de gestión web, push | 0,00 | 0,00 |
 | Apple Developer | 99,00 | 99,00 |
 | Dominio .uy | 12,08 | 12,08 |
 | **Total años siguientes** | **195,08** | **495,08** |
@@ -151,15 +151,15 @@ Por plataforma (año 1): Android USD 25 una vez. iOS USD 99 por año. Web USD 12
  
 Durante el desarrollo el hosting es USD 0 (capas gratuitas). Las cuentas de Apple y Google se pagan cuando se quiere empezar a probar con testers.
  
-Cuándo se empieza a pagar de más: Resend a partir de 100 mails por día o 3.000 por mes (USD 20 por mes), R2 al pasar los 10 GB (USD 0,015 por GB-mes), EAS al pasar los límites mencionados (USD 19 por mes). Con el volumen del escenario no pasa nada de eso.
+Cuándo se empieza a pagar de más: Gmail al pasar unos 500 envíos por día (habría que pasar a un proveedor de mail transaccional), Storage al pasar los 100 GB de Pro, EAS al pasar los límites mencionados (USD 19 por mes). Con el volumen del escenario no pasa nada de eso.
  
 ### 8.4 Riesgos de la opción mínima
  
-Supabase Free pausa el proyecto tras una semana sin actividad y no incluye backups. Mitigación: un proceso programado que haga una consulta diaria, y un `pg_dump` nocturno a R2 con GitHub Actions. No tiene soporte ni garantía de disponibilidad. Conviene pasar a Pro cuando la app tenga usuarios reales en producción.
+Supabase Free pausa el proyecto tras una semana sin actividad y no incluye backups. Mitigación: un proceso programado que haga una consulta diaria, y un `pg_dump` nocturno a un destino externo con GitHub Actions. No tiene soporte ni garantía de disponibilidad. Conviene pasar a Pro cuando la app tenga usuarios reales en producción.
  
 ### 8.5 Almacenamiento con retención de 6 meses
  
-Con fotos comprimidas a 600 KB: originales unos 360 MB por mes, que se estabilizan en unos 2,2 GB. Los PDF (unos 1,5 MB cada uno) acumulan unos 1,1 GB por año. El primer año termina en unos 3,3 GB y recién después de 6 o 7 años se pasan los 10 GB gratis. Con fotos de 1 MB serían unos 6 años. A 5 veces el volumen se pasan los 10 GB, pero el costo sería menor a USD 1 por mes.
+Con fotos comprimidas a 600 KB: originales unos 360 MB por mes, que se estabilizan en unos 2,2 GB. Los PDF (unos 1,5 MB cada uno) acumulan unos 1,1 GB por año. El primer año termina en unos 3,3 GB. Supabase Free incluye solo 1 GB de Storage, así que con este volumen el plan Free alcanza unos 3 meses de uso real: para producción corresponde Supabase Pro (100 GB incluidos), donde el volumen del escenario ni se acerca al tope. Verificar los límites vigentes en la página de precios de Supabase.
  
 Compresión en el dispositivo: lado largo a 1600 px, JPEG calidad 0,7, thumbnail de 320 px, y una versión de 1024 px para el PDF.
  
@@ -179,10 +179,10 @@ Un desarrollador full stack, 40 horas por semana: MVP de unas 405 a 555 horas, o
 2. Subidas fallidas con mala señal: la cola local y la idempotencia son parte del núcleo.
 3. Supabase Free: pausa y falta de backups (ver 8.4).
 4. Privacidad: fotos con personas y teléfonos.
-5. Mail como único canal hacia el usuario cliente: configurar SPF y DKIM del dominio en Resend para que el PDF no caiga en spam, y mostrar el PDF también en la app del usuario cliente.
+5. Mail como único canal hacia el usuario cliente: Gmail envía desde una cuenta personal sin dominio propio, por lo que el PDF puede caer en spam; antes de producción pasar a un dominio propio con SPF y DKIM, y mostrar el PDF también en la app del usuario cliente.
 ## 12. Siguientes pasos
  
-1. Crear cuentas: Apple Developer, Google Play (idealmente como organización), Cloudflare R2, Resend con dominio verificado.
-2. Spike técnico de una semana: Expo, editor 10tap, selección de 25 fotos, compresión y subida a R2 con y sin conexión, en un Android de gama baja.
+1. Crear cuentas: Apple Developer, Google Play (idealmente como organización), contraseña de aplicación de Gmail para el remitente.
+2. Spike técnico de una semana: Expo, editor 10tap, selección de 25 fotos, compresión y subida a Storage con y sin conexión, en un Android de gama baja.
 3. Abrir la prueba cerrada con 12 testers reales apenas haya un primer build.
 4. Desarrollar con capas gratuitas y pasar a Render Starter cuando haya usuarios real
