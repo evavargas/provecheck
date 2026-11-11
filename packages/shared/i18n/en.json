@@ -32,7 +32,8 @@
     "RATE_LIMITED": "Too many attempts. Wait a moment and try again.",
     "INTERNAL": "Something went wrong. Please try again.",
     "NETWORK": "You need a connection to sign in.",
-    "HAS_PENDING_TASKS": "There are pending tasks. Reassign them before deactivating."
+    "HAS_PENDING_TASKS": "There are pending tasks. Reassign them before deactivating.",
+    "NAME_TAKEN": "One with that name already exists."
   },
   "auth": {
     "title": "Sign in",
@@ -184,5 +185,83 @@
     },
     "reactivated": "{{name}} was reactivated.",
     "updated": "Changes saved."
+  },
+  "companies": {
+    "title": "Client companies",
+    "subtitle": "Companies you serve and their objection window",
+    "new": "New company",
+    "filterSearch": "Search by legal name…",
+    "filterStatus": "Status",
+    "allStatuses": "All",
+    "active": "Active",
+    "inactive": "Inactive",
+    "col": {
+      "legalName": "Legal name",
+      "address": "Address",
+      "phone": "Phone",
+      "email": "Email",
+      "window": "Objection window",
+      "status": "Status",
+      "actions": "Actions"
+    },
+    "windowDefault": "Default ({{hours}} h)",
+    "windowHours": "{{hours}} h",
+    "action": {
+      "edit": "Edit",
+      "deactivate": "Deactivate",
+      "reactivate": "Reactivate"
+    },
+    "created": "Company created.",
+    "updated": "Company updated.",
+    "deactivated": "{{name}} was deactivated.",
+    "reactivated": "{{name}} is active again.",
+    "form": {
+      "createTitle": "New company",
+      "createSubtitle": "Company details and contacts",
+      "editTitle": "Edit company",
+      "editSubtitle": "Window changes only affect tasks completed afterwards",
+      "legalName": "Legal name",
+      "address": "Address",
+      "phone": "Phone",
+      "email": "Email",
+      "emailHint": "Used to send the PDF when the task has no client user.",
+      "notes": "Notes",
+      "window": "Objection window (hours)",
+      "windowHint": "Empty = {{hours}} hours by default.",
+      "windowInvalid": "Enter a whole number between 1 and 8760.",
+      "contacts": "Contacts",
+      "addContact": "Add contact",
+      "removeContact": "Remove contact",
+      "contactName": "Name",
+      "contactRole": "Role",
+      "contactPhone": "Phone",
+      "contactEmail": "Email",
+      "create": "Create company",
+      "nameTaken": "A company with that legal name already exists.",
+      "emailFormat": "Enter a valid email."
+    }
+  },
+  "serviceTypes": {
+    "title": "Service types",
+    "subtitle": "Categories picked when creating a task",
+    "new": "New type",
+    "name": "Name",
+    "namePlaceholder": "E.g. Deep cleaning",
+    "add": "Add",
+    "col": {
+      "name": "Name",
+      "status": "Status",
+      "actions": "Actions"
+    },
+    "active": "Active",
+    "inactive": "Inactive",
+    "action": {
+      "rename": "Rename",
+      "deactivate": "Deactivate",
+      "reactivate": "Activate"
+    },
+    "save": "Save name",
+    "empty": "There are no service types yet.",
+    "nameTaken": "A type with that name already exists."
   }
 }

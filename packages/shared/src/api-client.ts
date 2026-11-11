@@ -7,6 +7,14 @@ import type {
   UserDto,
   UserList,
 } from './users';
+import type {
+  CompanyDto,
+  CompanyList,
+  CreateCompanyInput,
+  ListCompaniesParams,
+  ServiceTypeDto,
+  UpdateCompanyInput,
+} from './catalogs';
 import type { ApiError, ErrorCode } from './errors';
 import type {
   FirstLoginInput,
@@ -41,7 +49,7 @@ export interface ApiClientOptions {
   onSessionLost?: () => void;
 }
 
-const query = (params: Record<string, string | number | undefined>) => {
+const query = (params: Record<string, string | number | boolean | undefined>) => {
   const qs = new URLSearchParams();
   for (const [k, v] of Object.entries(params))
     if (v !== undefined && v !== '') qs.set(k, String(v));
@@ -131,7 +139,25 @@ export function createApiClient(opts: ApiClientOptions) {
       resetPassword: (id: string, temporaryPassword: string) =>
         request<void>('POST', `/users/${id}/reset-password`, { temporaryPassword }),
     },
-    companyOptions: () => request<{ items: CompanyOptionDto[] }>('GET', '/client-companies'),
+    companyOptions: () =>
+      request<{ items: CompanyOptionDto[] }>('GET', '/client-companies/options'),
+    companies: {
+      list: (params: ListCompaniesParams = {}) =>
+        request<CompanyList>('GET', `/client-companies${query(params)}`),
+      create: (input: CreateCompanyInput) =>
+        request<CompanyDto>('POST', '/client-companies', input),
+      update: (id: string, input: UpdateCompanyInput) =>
+        request<CompanyDto>('PATCH', `/client-companies/${id}`, input),
+      deactivate: (id: string) => request<CompanyDto>('POST', `/client-companies/${id}/deactivate`),
+      reactivate: (id: string) => request<CompanyDto>('POST', `/client-companies/${id}/reactivate`),
+    },
+    serviceTypes: {
+      list: (active?: boolean) =>
+        request<{ items: ServiceTypeDto[] }>('GET', `/service-types${query({ active })}`),
+      create: (name: string) => request<ServiceTypeDto>('POST', '/service-types', { name }),
+      update: (id: string, input: { name?: string; active?: boolean }) =>
+        request<ServiceTypeDto>('PATCH', `/service-types/${id}`, input),
+    },
     async logout(): Promise<void> {
       try {
         await request<void>('POST', '/auth/logout', {});

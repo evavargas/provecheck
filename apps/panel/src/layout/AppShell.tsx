@@ -31,10 +31,10 @@ const NAV: NavItem[] = [
   { key: 'home', icon: House, to: '/' },
   { key: 'tasks', icon: ClipboardList },
   { key: 'objections', icon: Gavel },
-  { key: 'companies', icon: Building2 },
+  { key: 'companies', icon: Building2, to: '/companies' },
   { key: 'users', icon: Users, to: '/users' },
   { key: 'ratings', icon: Star },
-  { key: 'serviceTypes', icon: Wrench },
+  { key: 'serviceTypes', icon: Wrench, to: '/service-types' },
   { key: 'audit', icon: History },
   { key: 'settings', icon: Settings },
 ];

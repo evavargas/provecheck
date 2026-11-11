@@ -185,7 +185,7 @@ describe('create', () => {
     });
     expect(missing.statusCode).toBe(422);
 
-    const options = (await call('GET', '/client-companies', adminToken)).json();
+    const options = (await call('GET', '/client-companies/options', adminToken)).json();
     expect(options.items).toContainEqual({ id: companyId, name: `Company ${run}` });
 
     const unlink = await call('PATCH', `/users/${ok.json().id}/client-company`, adminToken, {

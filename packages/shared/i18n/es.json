@@ -32,7 +32,8 @@
     "RATE_LIMITED": "Demasiados intentos. Esperá un momento y probá de nuevo.",
     "INTERNAL": "Algo salió mal. Probá de nuevo.",
     "NETWORK": "Necesitás conexión para ingresar.",
-    "HAS_PENDING_TASKS": "Tiene tareas pendientes. Reasignalas antes de dar de baja."
+    "HAS_PENDING_TASKS": "Tiene tareas pendientes. Reasignalas antes de dar de baja.",
+    "NAME_TAKEN": "Ya existe uno con ese nombre."
   },
   "auth": {
     "title": "Iniciar sesión",
@@ -184,5 +185,83 @@
     },
     "reactivated": "{{name}} fue reactivado.",
     "updated": "Cambios guardados."
+  },
+  "companies": {
+    "title": "Empresas cliente",
+    "subtitle": "Clientes a los que prestás servicio y su plazo de descargos",
+    "new": "Nueva empresa",
+    "filterSearch": "Buscar por razón social…",
+    "filterStatus": "Estado",
+    "allStatuses": "Todas",
+    "active": "Activa",
+    "inactive": "De baja",
+    "col": {
+      "legalName": "Razón social",
+      "address": "Dirección",
+      "phone": "Teléfono",
+      "email": "Correo electrónico",
+      "window": "Plazo de descargos",
+      "status": "Estado",
+      "actions": "Acciones"
+    },
+    "windowDefault": "Por defecto ({{hours}} h)",
+    "windowHours": "{{hours}} h",
+    "action": {
+      "edit": "Editar",
+      "deactivate": "Dar de baja",
+      "reactivate": "Reactivar"
+    },
+    "created": "Empresa creada.",
+    "updated": "Empresa actualizada.",
+    "deactivated": "{{name}} quedó de baja.",
+    "reactivated": "{{name}} está activa de nuevo.",
+    "form": {
+      "createTitle": "Nueva empresa",
+      "createSubtitle": "Datos de la empresa y sus contactos",
+      "editTitle": "Editar empresa",
+      "editSubtitle": "Los cambios de plazo solo afectan tareas que se finalicen después",
+      "legalName": "Razón social",
+      "address": "Dirección",
+      "phone": "Teléfono",
+      "email": "Correo electrónico",
+      "emailHint": "Se usa para enviar el PDF si la tarea no tiene usuario cliente.",
+      "notes": "Observaciones",
+      "window": "Plazo de descargos (horas)",
+      "windowHint": "Vacío = {{hours}} horas por defecto.",
+      "windowInvalid": "Ingresá un número entero entre 1 y 8760.",
+      "contacts": "Contactos",
+      "addContact": "Agregar contacto",
+      "removeContact": "Quitar contacto",
+      "contactName": "Nombre",
+      "contactRole": "Cargo",
+      "contactPhone": "Teléfono",
+      "contactEmail": "Correo electrónico",
+      "create": "Crear empresa",
+      "nameTaken": "Ya existe una empresa con esa razón social.",
+      "emailFormat": "Ingresá un correo válido."
+    }
+  },
+  "serviceTypes": {
+    "title": "Tipos de servicio",
+    "subtitle": "Categorías que se eligen al crear una tarea",
+    "new": "Nuevo tipo",
+    "name": "Nombre",
+    "namePlaceholder": "Ej.: Limpieza profunda",
+    "add": "Agregar",
+    "col": {
+      "name": "Nombre",
+      "status": "Estado",
+      "actions": "Acciones"
+    },
+    "active": "Activo",
+    "inactive": "Inactivo",
+    "action": {
+      "rename": "Renombrar",
+      "deactivate": "Desactivar",
+      "reactivate": "Activar"
+    },
+    "save": "Guardar nombre",
+    "empty": "Todavía no hay tipos de servicio.",
+    "nameTaken": "Ya existe un tipo con ese nombre."
   }
 }

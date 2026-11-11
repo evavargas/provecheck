@@ -5,18 +5,16 @@ import {
   listUsersQuery,
   resetPasswordInput,
   updateUserInput,
-  type CompanyOptionDto,
 } from '@provecheck/shared';
 import type { FastifyInstance } from 'fastify';
 import { z } from 'zod';
-import type { Db } from '../../plugins/db.js';
 import { requireAdmin } from '../../plugins/auth-guard.js';
 import type { UsersService } from './service.js';
 
 const idParams = z.object({ id: z.string().uuid() });
 
-export async function usersRoutes(app: FastifyInstance, opts: { users: UsersService; db: Db }) {
-  const { users, db } = opts;
+export async function usersRoutes(app: FastifyInstance, opts: { users: UsersService }) {
+  const { users } = opts;
   app.addHook('preHandler', async (req) => requireAdmin(req));
 
   app.get('/users', async (req) => users.list(req.auth, listUsersQuery.parse(req.query)));
@@ -59,15 +57,5 @@ export async function usersRoutes(app: FastifyInstance, opts: { users: UsersServ
       resetPasswordInput.parse(req.body).temporaryPassword,
     );
     return reply.status(204).send();
-  });
-
-  // Options for the client-user form; the full companies module (P-07) comes later.
-  app.get('/client-companies', async (req): Promise<{ items: CompanyOptionDto[] }> => {
-    const { rows } = await db.asActor(req.auth, (c) =>
-      c.query<CompanyOptionDto>(
-        'SELECT id, legal_name AS name FROM client_companies WHERE active ORDER BY legal_name',
-      ),
-    );
-    return { items: rows };
   });
 }

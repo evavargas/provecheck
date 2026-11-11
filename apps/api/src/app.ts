@@ -11,6 +11,8 @@ import { createAuthService } from './modules/auth/service.js';
 import { healthRoutes } from './modules/health/routes.js';
 import { authGuard } from './plugins/auth-guard.js';
 import { createUsersService } from './modules/users/service.js';
+import { catalogsRoutes } from './modules/catalogs/routes.js';
+import { createCatalogsService } from './modules/catalogs/service.js';
 import { usersRoutes } from './modules/users/routes.js';
 import { createDb } from './plugins/db.js';
 import { createSupabase } from './plugins/supabase.js';
@@ -76,7 +78,8 @@ export async function buildApp(env: Env) {
   await app.register(async (scope) => {
     authGuard(scope, auth);
     await scope.register(authRoutes, { auth, maxLoginAttempts: env.LOGIN_MAX_ATTEMPTS });
-    await scope.register(usersRoutes, { users: createUsersService({ db, supabase }), db });
+    await scope.register(usersRoutes, { users: createUsersService({ db, supabase }) });
+    await scope.register(catalogsRoutes, { catalogs: createCatalogsService({ db }) });
   });
   return app;
 }
