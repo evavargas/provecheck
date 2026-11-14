@@ -8,3 +8,7 @@ supabase start          # needs Docker
 cp .env.example .env    # fill keys from `supabase status`
 pnpm --filter api dev
 ```
+
+## Deploying
+
+See [DEPLOY.md](DEPLOY.md).

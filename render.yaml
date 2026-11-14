@@ -9,5 +9,29 @@ services:
     envVars:
       - key: LOG_LEVEL
         value: info
+      - key: STORAGE_BUCKET
+        value: provecheck
+      - key: SMTP_HOST
+        value: smtp.gmail.com
+      - key: SMTP_PORT
+        value: '465'
+      # Secrets and per-environment values: set them in the Render dashboard (never in this file).
+      - key: DATABASE_URL
+        sync: false
+      - key: SUPABASE_URL
+        sync: false
+      - key: SUPABASE_ANON_KEY
+        sync: false
+      - key: SUPABASE_SERVICE_ROLE_KEY
+        sync: false
+      - key: SMTP_USER
+        sync: false
+      - key: SMTP_PASSWORD
+        sync: false
+      - key: MAIL_FROM
+        sync: false
+      # Comma separated origins of the panel and the web app, e.g. https://panel.example.com,https://app.example.com
       - key: CORS_ORIGINS
+        sync: false
+      - key: APP_URL
         sync: false
