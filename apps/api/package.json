@@ -12,7 +12,8 @@
     "test": "vitest run",
     "test:integration": "vitest run -c vitest.int.config.ts",
     "create-admin": "tsx --env-file=../../.env src/scripts/create-admin.ts",
-    "seed-demo": "tsx --env-file=../../.env src/scripts/seed-demo.ts"
+    "seed-demo": "tsx --env-file=../../.env src/scripts/seed-demo.ts",
+    "seed-demo-more": "tsx --env-file=../../.env src/scripts/seed-demo-more.ts"
   },
   "devDependencies": {
     "@types/node": "^26.6.6",
