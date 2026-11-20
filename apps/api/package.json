@@ -11,7 +11,8 @@
     "typecheck": "tsc -p .",
     "test": "vitest run",
     "test:integration": "vitest run -c vitest.int.config.ts",
-    "create-admin": "tsx --env-file=../../.env src/scripts/create-admin.ts"
+    "create-admin": "tsx --env-file=../../.env src/scripts/create-admin.ts",
+    "seed-demo": "tsx --env-file=../../.env src/scripts/seed-demo.ts"
   },
   "devDependencies": {
     "@types/node": "^26.6.6",
