@@ -3,7 +3,7 @@
     "name": "ProveCheck",
     "slug": "provecheck",
     "scheme": "provecheck",
-    "version": "0.0.0",
+    "version": "1.0.0",
     "orientation": "portrait",
     "userInterfaceStyle": "automatic",
     "plugins": [
@@ -14,7 +14,16 @@
         "expo-image-picker",
         {
           "photosPermission": "ProveCheck necesita tus fotos para adjuntar evidencia del servicio.",
-          "cameraPermission": "ProveCheck necesita la c\u00e1mara para fotografiar el servicio."
+          "cameraPermission": "ProveCheck necesita la cámara para fotografiar el servicio."
+        }
+      ],
+      [
+        "expo-splash-screen",
+        {
+          "image": "./assets/splash-icon.png",
+          "imageWidth": 240,
+          "backgroundColor": "#0F4C5C",
+          "resizeMode": "contain"
         }
       ]
     ],
@@ -23,10 +32,30 @@
       "output": "single"
     },
     "ios": {
-      "bundleIdentifier": "uy.provecheck.app"
+      "bundleIdentifier": "uy.provecheck.app",
+      "infoPlist": {}
     },
     "android": {
-      "package": "uy.provecheck.app"
-    }
+      "package": "uy.provecheck.app",
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#0F4C5C"
+      },
+      "permissions": [
+        "android.permission.RECORD_AUDIO"
+      ]
+    },
+    "icon": "./assets/icon.png",
+    "extra": {
+      "router": {
+        "asyncRoutes": {
+          "web": true
+        }
+      },
+      "eas": {
+        "projectId": "ba96f9fe-8cda-44c0-a424-d2222c2d11eb"
+      }
+    },
+    "owner": "evavargas"
   }
 }
