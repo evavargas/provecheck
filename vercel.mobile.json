@@ -1,0 +1,8 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "framework": null,
+  "installCommand": "npx --yes pnpm@12.10.1 install --frozen-lockfile --filter mobile...",
+  "buildCommand": "cd apps/mobile && npx expo export --platform web",
+  "outputDirectory": "apps/mobile/dist",
+  "rewrites": [{ "source": "/(.*)", "destination": "/index.html" }]
+}

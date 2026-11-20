@@ -44,16 +44,19 @@ It prints a temporary password once. The first login asks for a new password.
 
 ## 4. Panel and web app on Vercel
 
-Create two Vercel projects from the same repository, both with **"Include source files outside of the Root Directory"** enabled:
+Two Vercel projects (`provecheck-panel`, `provecheck-app`), deployed from the repository root with the CLI because both need the shared package. The build settings live in `vercel.panel.json` and `vercel.mobile.json`; the API address is a build variable.
 
-| Project | Root Directory | Environment variable                                 |
-| ------- | -------------- | ---------------------------------------------------- |
-| Panel   | `apps/panel`   | `VITE_API_URL=https://<service>.onrender.com`        |
-| Web app | `apps/mobile`  | `EXPO_PUBLIC_API_URL=https://<service>.onrender.com` |
+```
+vercel link --project provecheck-panel --yes
+vercel deploy --prod --yes --local-config vercel.panel.json --build-env VITE_API_URL=https://<service>.onrender.com
 
-`vercel.json` in each folder already holds the install and build commands and the single page fallback.
+vercel link --project provecheck-app --yes
+vercel deploy --prod --yes --local-config vercel.mobile.json --build-env EXPO_PUBLIC_API_URL=https://<service>.onrender.com
+```
 
-Then go back to Render, set `CORS_ORIGINS` (comma separated, no trailing slash) to the two Vercel URLs and redeploy the API.
+These deployments are not connected to Git: redeploy with the same commands after a change.
+
+Then go back to Render, set `CORS_ORIGINS` (comma separated, no trailing slash) to the two production addresses and `APP_URL` to the web app address. Render redeploys by itself.
 
 ## 5. Check it end to end
 
