@@ -263,6 +263,8 @@ export function createApiClient(opts: ApiClientOptions) {
         request<{ uploadUrl: string }>('POST', '/organization/logo/presign', input),
       confirmLogo: (contentType: PresignLogoInput['contentType']) =>
         request<OrganizationDto>('POST', '/organization/logo/confirm', { contentType }),
+      mailTest: () =>
+        request<{ ok: boolean; to?: string; error?: string }>('POST', '/organization/mail-test'),
       removeLogo: () => request<OrganizationDto>('DELETE', '/organization/logo'),
     },
     audit: (params: ListAuditParams = {}) => request<AuditList>('GET', `/audit${query(params)}`),

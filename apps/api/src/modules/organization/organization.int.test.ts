@@ -4,6 +4,7 @@ import { buildApp, type App } from '../../app.js';
 import { loadEnv } from '../../lib/env.js';
 import { createDb } from '../../plugins/db.js';
 import { createSupabase } from '../../plugins/supabase.js';
+import type { Transporter } from 'nodemailer';
 import { createStorage } from '../../lib/storage.js';
 import { createUser } from '../users/create-user.js';
 
@@ -15,9 +16,19 @@ const env = loadEnv({
   ...process.env,
   LOG_LEVEL: process.env.TEST_LOG ?? 'silent',
   LOGIN_MAX_ATTEMPTS: '1000',
+  SMTP_USER: 'sender@example.test',
+  SMTP_PASSWORD: 'dummy-smtp-secret',
 });
 const db = createDb(env.DATABASE_URL);
 const supabase = createSupabase(env);
+const mails: { to: string }[] = [];
+let mailError: string | null = null;
+const mailer = {
+  sendMail: async (m: { to: string }) => {
+    if (mailError) throw new Error(mailError);
+    mails.push(m);
+  },
+} as unknown as Transporter;
 const storage = createStorage(supabase, env.STORAGE_BUCKET);
 let app: App;
 const orgs: string[] = [];
@@ -73,7 +84,7 @@ const PNG = Buffer.from(
 );
 
 beforeAll(async () => {
-  app = await buildApp(env);
+  app = await buildApp(env, { mailer });
   for (const n of ['A', 'B']) {
     const { rows } = await db.pool.query<{ id: string }>(
       'INSERT INTO organizations (name) VALUES ($1) RETURNING id',
@@ -107,7 +118,7 @@ describe('organization', () => {
       defaultObjectionWindowHours: 336,
       logoUrl: null,
     });
-    expect(res.body).not.toContain(env.SMTP_PASSWORD || 'no-password-set');
+    expect(res.body).not.toContain('dummy-smtp-secret');
     expect(typeof res.json().mail.configured).toBe('boolean');
   });
 
@@ -190,6 +201,20 @@ describe('organization', () => {
     const removed = await call('DELETE', '/organization/logo', adminToken);
     expect(removed.json().logoUrl).toBeNull();
     expect(await storage.exists(`org/${orgs[0]}/logo/logo.png`)).toBe(false);
+  });
+});
+
+describe('mail test', () => {
+  it('sends to the admin, reports a failure with its reason, and is admin only', async () => {
+    expect((await call('POST', '/organization/mail-test', collabToken)).statusCode).toBe(403);
+    const ok = await call('POST', '/organization/mail-test', adminToken);
+    expect(ok.json()).toMatchObject({ ok: true, to: `oadmin.${run}@example.test` });
+    expect(mails.map((m) => m.to)).toEqual([`oadmin.${run}@example.test`]);
+    mailError = 'Connection timeout';
+    const bad = await call('POST', '/organization/mail-test', adminToken);
+    mailError = null;
+    expect(bad.json()).toMatchObject({ ok: false, error: 'Connection timeout' });
+    expect(bad.body).not.toContain('dummy-smtp-secret');
   });
 });
 

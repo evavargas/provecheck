@@ -124,7 +124,7 @@ export async function buildApp(env: Env, overrides: { mailer?: Transporter } = {
     });
     await scope.register(feedbackRoutes, { feedback: createFeedbackAdmin({ db, storage }) });
     await scope.register(organizationRoutes, {
-      org: createOrganizationService({ db, storage, env }),
+      org: createOrganizationService({ db, storage, env, mailer }),
     });
     await scope.register(catalogsRoutes, { catalogs: createCatalogsService({ db }) });
   });

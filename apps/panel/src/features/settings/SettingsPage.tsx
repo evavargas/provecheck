@@ -73,6 +73,19 @@ function Form({ org }: { org: OrganizationDto }) {
     },
     onError: (err) => setMessage({ ok: false, text: errorMessage(t, err) }),
   });
+  const [mailResult, setMailResult] = useState<string | null>(null);
+  const mailTest = useMutation({
+    mutationFn: api.organization.mailTest,
+    onSuccess: (r) =>
+      setMailResult(
+        r.ok
+          ? t('settings.mailTestSent', { to: r.to })
+          : r.error === 'not_configured'
+            ? t('settings.mailTestNotConfigured')
+            : t('settings.mailTestFailed', { error: r.error }),
+      ),
+    onError: (err) => setMailResult(errorMessage(t, err)),
+  });
   const remove = useMutation({ mutationFn: api.organization.removeLogo, onSuccess: refresh });
 
   function pick(f: File | undefined) {
@@ -197,6 +210,21 @@ function Form({ org }: { org: OrganizationDto }) {
               ? t('settings.mailOk', { from: org.mail.from })
               : t('settings.mailMissing')}
           </p>
+          <button
+            className="ghost"
+            onClick={() => {
+              setMailResult(null);
+              mailTest.mutate();
+            }}
+            disabled={mailTest.isPending}
+          >
+            <Mail size={18} aria-hidden /> {t('settings.mailTest')}
+          </button>
+          {mailResult && (
+            <p role="status" className="hint">
+              {mailResult}
+            </p>
+          )}
         </div>
       </div>
     </>

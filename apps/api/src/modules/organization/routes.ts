@@ -20,6 +20,7 @@ export async function organizationRoutes(app: FastifyInstance, opts: { org: Orga
       presignLogoInput.pick({ contentType: true }).parse(req.body).contentType,
     ),
   );
+  app.post('/organization/mail-test', async (req) => org.sendTestMail(req.auth));
   app.delete('/organization/logo', async (req) => org.removeLogo(req.auth));
   app.get('/audit', async (req) => org.audit(req.auth, listAuditQuery.parse(req.query)));
 }

@@ -630,7 +630,11 @@
     "localeNames": {
       "es-UY": "Español (Uruguay)",
       "en": "English"
-    }
+    },
+    "mailTest": "Send test email",
+    "mailTestSent": "Sent to {{to}}. Check the inbox.",
+    "mailTestFailed": "Could not send: {{error}}",
+    "mailTestNotConfigured": "The SMTP access is not configured on the server."
   },
   "audit": {
     "title": "Audit",

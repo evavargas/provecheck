@@ -1,3 +1,4 @@
+import type { Transporter } from 'nodemailer';
 import type {
   AuditEntryDto,
   AuditList,
@@ -29,8 +30,13 @@ const COLUMNS = {
 export const logoKey = (orgId: string, contentType: string) =>
   `org/${orgId}/logo/logo.${contentType === 'image/png' ? 'png' : 'jpg'}`;
 
-export function createOrganizationService(deps: { db: Db; storage: Storage; env: Env }) {
-  const { db, storage, env } = deps;
+export function createOrganizationService(deps: {
+  db: Db;
+  storage: Storage;
+  env: Env;
+  mailer: Transporter;
+}) {
+  const { db, storage, env, mailer } = deps;
 
   const toDto = async (r: OrgRow): Promise<OrganizationDto> => ({
     id: r.id,
@@ -125,6 +131,27 @@ export function createOrganizationService(deps: { db: Db; storage: Storage; env:
       });
       if (org.logo_key) await storage.remove([org.logo_key]);
       return toDto(await load(actor));
+    },
+
+    /** Sends one mail to the caller so an admin can check the SMTP access from the real server (hosts may block SMTP). */
+    async sendTestMail(actor: Actor): Promise<{ ok: boolean; to?: string; error?: string }> {
+      if (!env.SMTP_USER || !env.SMTP_PASSWORD) return { ok: false, error: 'not_configured' };
+      const { rows } = await db.asActor(actor, (c) =>
+        c.query<{ email: string }>('SELECT email::text FROM users WHERE id = $1', [actor.id]),
+      );
+      const to = rows[0]!.email;
+      try {
+        await mailer.sendMail({
+          from: env.MAIL_FROM || env.SMTP_USER,
+          to,
+          subject: 'ProveCheck: correo de prueba / test email',
+          text: 'Si recibiste este mensaje, el envío de correos funciona. / If you received this, mail delivery works.',
+        });
+        return { ok: true, to };
+      } catch (err) {
+        // The admin needs the reason (timeout, auth, blocked port); it never contains the password.
+        return { ok: false, to, error: ((err as Error).message || 'unknown').slice(0, 200) };
+      }
     },
 
     /** P-12: newest first, paged by id (a bigserial, so it is monotonic and cheap). */
